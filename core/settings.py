@@ -169,5 +169,5 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'techadr361@gmail.com'
-EMAIL_HOST_PASSWORD = 'ynrm qcox woic hocc'
+EMAIL_HOST_PASSWORD = '*'
 DEFAULT_FROM_EMMAIL = 'Direto no Ponto <diretonoponto@gmail.com>'
