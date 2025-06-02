@@ -7,7 +7,11 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import generics
 from django.contrib.auth.models import User
 from .serializers import CategoriaSerializer, ProdutoListSerializer, ProdutoDetailSerializer
-from .serializers import RegisterSerializer
+from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_str
+from .tokens import account_activation_token
 
 class CategoriaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Categoria.objects.all()
@@ -64,3 +68,21 @@ class MinhaContaView(APIView):
             'username': user.username,
             'email': user.email,
         })   
+    
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+
+class ActivationAccountView(APIView):
+    def get(self, request, uidb64, token):
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk = uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+
+        if user is not None and account_activation_token.check_token(user, token):
+            user.is_active = True
+            user.save()
+            return Response({'message': 'Conta ativada com sucesso!'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Link inválido ou expirado.'}, status=status.HTTP_400_BAD_REQUEST)
