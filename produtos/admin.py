@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Categoria, Produto, DetalhesProduto
+from .models import Categoria, Produto, DetalhesProduto, Cupom, CupomUsado
 from django.utils.html import format_html
 from taggit.models import Tag
 
@@ -15,13 +15,15 @@ class CategoriaAdmin(admin.ModelAdmin):
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
-    list_display = ('titulo', 'categoria', 'preco', 'tag', 'destaque', 'exibir_imagem', 'data_atualizacao')
-    list_filter = ('categoria', 'tag', 'destaque', 'data_criacao')
-    search_fields = ('titulo', 'descricao')
+    list_display = ('titulo', 'categoria', 'concurso', 
+                    'codigo', 'preco', 'tag', 'destaque', 
+                    'exibir_imagem', 'data_atualizacao')
+    list_filter = ('categoria', 'concurso', 
+                   'tag', 'destaque', 'data_criacao')
+    search_fields = ('titulo', 'codigo', 'descricao', 'concurso')
     prepopulated_fields = {'slug': ('titulo',)}
     inlines = [DetalhesProdutoInline]
     list_editable = ('destaque', 'tag')
-    
     
     def exibir_imagem(self, obj):
         if obj.imagem:
@@ -31,7 +33,7 @@ class ProdutoAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Informações Básicas', {
-            'fields': ('titulo', 'slug', 'categoria', 'tag', 'destaque', 'tags')
+            'fields': ('titulo', 'slug', 'categoria', 'concurso', 'tag', 'destaque', 'tags')
         }),
         ('Descrição', {
             'fields': ('descricao_curta', 'descricao')
@@ -42,4 +44,19 @@ class ProdutoAdmin(admin.ModelAdmin):
         ('Imagem', {
             'fields': ('imagem',)
         }),
+        ('Combos', {
+            'fields': ('is_combo', 'produtos_inclusos')
+        }),
     )
+
+@admin.register(Cupom)
+class CupomAdmin(admin.ModelAdmin):
+    list_display = ('codigo', 'tipo', 'valor', 'ativo', 'validade')
+    list_filter = ('ativo', 'tipo', 'validade')
+    search_fields = ('codigo',)
+
+@admin.register(CupomUsado)
+class CupomUsadoAdmin(admin.ModelAdmin):
+    list_display = ('cupom', 'usuario', 'usado_em')
+    list_filter = ('cupom', 'usuario')
+    search_fields = ('cupom__codigo', 'usuario__username')

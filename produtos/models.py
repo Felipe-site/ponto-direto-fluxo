@@ -1,10 +1,18 @@
 
+import uuid
 from django.db import models
 from django.utils.text import slugify
+from django.utils import timezone
+from django.contrib.auth.models import User
 from taggit.managers import TaggableManager
+
+def gerar_codigo_produto(categoria_sigla, concurso_sigla):
+    sufixo = uuid.uuid4().hex[:6].upper()
+    return f"PROD-{categoria_sigla}-{concurso_sigla}-{sufixo}"
 
 class Categoria(models.Model):
     nome = models.CharField(max_length=100)
+    sigla = models.CharField(max_length=10)
     slug = models.SlugField(unique=True, blank=True)
     
     def save(self, *args, **kwargs):
@@ -29,7 +37,19 @@ class Produto(models.Model):
         ('Destaque', 'Destaque'),
         ('Novidade', 'Novidade'),
     ]
+
+    CATEGORIAS = [
+        ("ED", "Educação"),
+        ("JUR", "Jurídico"),
+        ("ADM", "Administrativo"),
+        ("TEC", "Técnico"),
+        ("FISC", "Fiscal"),
+        ("CON", "Controle"),
+        ("TI", "Tecnologia da Informação"),
+    ]
     
+    # Campos principais
+    codigo = models.CharField(max_length=16, unique=True, blank=True, null=True, editable=False)
     titulo = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True)
     descricao = models.TextField()
@@ -38,9 +58,16 @@ class Produto(models.Model):
     preco_antigo = models.DecimalField(max_digits=10, decimal_places= 2, null=True, blank=True)
     parcelas = models.IntegerField(default=12)
     imagem = models.ImageField(upload_to='produtos/', blank=True, null=True)
+
+    # Classificação
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='produtos')
+    concurso = models.CharField(max_length=20)
     tag = models.CharField(max_length=20, choices=TAGS_CHOICES, default='Regular')
     tags = TaggableManager(blank=True)
+
+    is_combo = models.BooleanField(default=False)
+    produtos_inclusos = models.ManyToManyField("self", blank=True, symmetrical=False, related_name="incluindo_em")
+
     destaque = models.BooleanField(default=False)
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_atualizacao = models.DateTimeField(auto_now=True)
@@ -51,16 +78,18 @@ class Produto(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.titulo)
+        if not self.codigo:
+            self.codigo = gerar_codigo_produto(self.categoria.sigla, self.concurso)
         super().save(*args, **kwargs)
     
     def __str__(self):
-        return self.titulo
+        return f"{self.titulo} ({self.codigo})"
     
     class Meta:
         verbose_name = 'Produto'
         verbose_name_plural = 'Produtos'
         ordering = ['-data_criacao']
-
+    
 class DetalhesProduto(models.Model):
     produto = models.OneToOneField(Produto, on_delete=models.CASCADE, related_name='detalhes')
     conteudo = models.TextField()
@@ -74,3 +103,48 @@ class DetalhesProduto(models.Model):
     class Meta:
         verbose_name = 'Detalhes do Produto'
         verbose_name_plural = 'Detalhes dos Produtos'
+
+class Cupom(models.Model):
+    TIPO_CHOICES = [
+        ('percentual', 'Percentual (%)'),
+        ('fixo', 'Valor Fixo (R$)'),
+    ]
+
+    class Meta:
+        verbose_name = "Cupom"
+        verbose_name_plural = "Cupons"
+
+    codigo = models.CharField(max_length=50, unique=True)
+    tipo = models.CharField(max_length=10, choices=TIPO_CHOICES)
+    valor = models.DecimalField(max_digits=10, decimal_places=2)
+    ativo = models.BooleanField(default=True)
+    validade = models.DateTimeField()
+    uso_minimo = models.DecimalField(
+        max_digits=10, decimal_places=2, blank=True, null=True,
+        help_text="Valor mínimo do pedido para uso do cupom (opcional)"
+    )
+    uso_maximo = models.PositiveIntegerField(null=True, blank=True, help_text="Máximo de usos globais (opcional)")
+    
+    def __str__(self):
+        return f"{self.codigo} ({self.tipo})"
+
+    def is_valido(self):
+        return self.ativo and timezone.now() <= self.validade
+    
+    def total_usos(self):
+        return self.cupomusado_set.count()
+    
+class CupomUsado(models.Model):
+    cupom = models.ForeignKey(Cupom, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    usado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('cupom', 'usuario')
+        verbose_name = 'Cupom Usado'
+        verbose_name_plural = 'Cupons Usados'
+
+        def __str__(self):
+            return f"{self.usuario.username} usou {self.cupom.codigo}"
+        
+

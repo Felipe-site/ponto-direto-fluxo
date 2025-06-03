@@ -18,9 +18,11 @@ const Resumos = () => {
       const response = await api.get('/produtos/', {
         params: { categoria: 'resumos' }
       });
-      return response.data as Produto[];
+      console.log("🔍 RESPOSTA DA API:", response.data);
+      return response.data;
     }
   });
+
 
   const addToCart = (produto: Produto) => {
     toast.success(`${produto.titulo} adicionado ao carrinho`);

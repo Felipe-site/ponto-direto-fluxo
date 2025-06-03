@@ -1,9 +1,10 @@
 
 from rest_framework import viewsets, permissions, status
-from produtos.models import Categoria, Produto
+from produtos.models import Categoria, Produto, Cupom, CupomUsado
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework import generics
 from django.contrib.auth.models import User
 from .serializers import CategoriaSerializer, ProdutoListSerializer, ProdutoDetailSerializer
@@ -11,7 +12,9 @@ from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
+from django.utils.timezone import now
 from .tokens import account_activation_token
+from decimal import Decimal
 
 class CategoriaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Categoria.objects.all()
@@ -86,3 +89,40 @@ class ActivationAccountView(APIView):
             return Response({'message': 'Conta ativada com sucesso!'}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Link inválido ou expirado.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def verificar_cupom(request):
+    codigo = request.data.get('codigo')
+    total = Decimal(request.data.get('total', 0))
+    user = request.user if request.user.is_authenticated else None
+
+    try:
+        cupom = Cupom.objects.get(codigo__iexact=codigo, ativo=True)
+        if not cupom.is_valido():
+            return Response({"valido": False, "erro": "Cupom expirado."})
+        
+        if cupom.uso_minimo and total < cupom.uso_minimo:
+            return Response({"valido": False, "erro": "Valor mínimo não atingido"})
+        
+        if cupom.uso_maximo and cupom.total_usos() >= cupom.uso_maximo:
+            return Response({"valido": False, "erro": "Cupom esgotado."})
+        
+        if user and CupomUsado.objects.filter(cupom=cupom, usuario=user).exists():
+            return Response({"valido": False, "erro": "Você já usou este cupom."})
+        
+        if cupom.tipo == 'percentual':
+            desconto = (total * cupom.valor/100).quantize(Decimal("0.01"))
+        else:
+            desconto = min(cupom.valor, total)
+
+        return Response({
+            "valido": True,
+            "codigo": cupom.codigo,
+            "tipo": cupom.tipo,
+            "valor": float(cupom.valor),
+            "desconto": float(desconto)
+        })
+    except Cupom.DoesNotExist:
+        return Response({"valido": False, "erro": "Cupom inválido."})
+    

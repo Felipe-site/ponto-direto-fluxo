@@ -2,7 +2,8 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (CategoriaViewSet, ProdutoViewSet, RegisterView, 
-                    MinhaContaView, CustomTokenObtainPairView, ActivationAccountView)
+                    MinhaContaView, CustomTokenObtainPairView, ActivationAccountView,
+                    verificar_cupom)
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 router = DefaultRouter()
@@ -16,4 +17,5 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('me/', MinhaContaView.as_view(), name='me'),
     path('activate/<uidb64>/<token>/', ActivationAccountView.as_view(), name='account_activate'),
+    path('verificar-cupom/', verificar_cupom, name='verificar_cupom'),
 ]

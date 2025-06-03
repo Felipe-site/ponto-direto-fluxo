@@ -12,6 +12,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Resumos from "./pages/Resumos";
 import ProdutoDetalhe from "./pages/ProdutoDetalhe";
+import Carrinho from "./pages/Carrinho";
 import { CartProvider } from "./context/CartContext";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
               <Route path="/materiais/resumos" element={<Resumos />} />
               <Route path="/produtos/:slug" element={<ProdutoDetalhe />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/carrinho" element={<Carrinho />}/>
               <Route 
                 path="/area-do-aluno"
                 element={

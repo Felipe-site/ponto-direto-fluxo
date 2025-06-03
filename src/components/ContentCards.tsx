@@ -112,9 +112,13 @@ const ContentCards = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-          {produtos.map((produto) => (
-            <ProdutoCard key={produto.id} produto={produto} onAddToCart={() => addToCart(produto)} />
-          ))}
+          {Array.isArray(produtos) ? (
+            produtos.map((produto) => (
+              <ProdutoCard key={produto.id} produto={produto} onAddToCart={() => addToCart(produto)} />
+            ))
+          ) : (
+            <p className="text-red-500 text-center col-span-3">Erro: dados inválidos retornados da API.</p>
+          )}
         </div>
 
         <div className="flex justify-center mt-10">
