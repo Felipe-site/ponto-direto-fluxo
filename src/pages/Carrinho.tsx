@@ -1,10 +1,11 @@
 import { useCart } from "@/context/CartContext";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export default function Carrinho() {
+  const navigate = useNavigate();
   const { items, removeFromCart, incrementar, decrementar } = useCart();
   const subtotal = items.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
   const [codigoCupom, setCodigoCupom] = useState("");
@@ -137,7 +138,7 @@ export default function Carrinho() {
               <span>R$ {totalFinal.toFixed(2)}</span>
             </div>
 
-            <button className="w-full bg-green-600 text-white py-3 rounded hover:bg-green-700">
+            <button onClick={() => navigate("/checkout")} className="w-full bg-green-600 text-white py-3 rounded hover:bg-green-700">
               Finalizar Compra
             </button>
           </div>

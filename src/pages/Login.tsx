@@ -35,16 +35,27 @@ const Login = () => {
       return !newErrors.username && !newErrors.password;
     };
   
-    const handleLoginSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      if (!validateLogin()) return;
-      try {
-        await login(loginData.username, loginData.password);
-        navigate("/area-do-aluno");
-      } catch {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateLogin()) return;
+    try {
+      await login(loginData.username, loginData.password);
+      navigate("/area-do-aluno");
+    } catch (error: any) {
+      console.log("ERRO DE LOGIN: ", error?.response?.data);
+
+      const data = error?.response?.data;
+      const msgArray = data?.non_field_errors || [];
+      const mensagem = msgArray.join(" ").toLowerCase();
+
+      if (mensagem.includes("inativa") || mensagem.includes("ativar")) {
+        navigate("/ativar-conta", { state: { email: loginData.username } });
+      } else {
         alert("Usuário ou senha inválidos.");
       }
-    };
+    }
+  };
+
   
     const handleRegisterSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
@@ -55,7 +66,7 @@ const Login = () => {
           email: registerData.email,
           password: registerData.password,
         });
-        alert("Cadastro realizado!");
+        navigate("/cadastro-concluido");
       } catch {
         alert("Erro ao cadastrar.");
       }

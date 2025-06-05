@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import ContentCards from "@/components/ContentCards";
 import Features from "@/components/Features";
-import Testimonials from "@/components/Testimonials";
+import AprovadosCarrossel from "@/components/AprovadosCarrossel";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -11,10 +11,10 @@ const Index = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow mt-16">
-        <Hero />
+        <Hero /> 
         <ContentCards />
         <Features />
-        <Testimonials />
+        <AprovadosCarrossel />
       </main>
       <Footer />
     </div>

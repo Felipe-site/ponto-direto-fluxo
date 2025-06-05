@@ -7,14 +7,16 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import generics
 from django.contrib.auth.models import User
-from .serializers import CategoriaSerializer, ProdutoListSerializer, ProdutoDetailSerializer
-from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer
+from .serializers import CategoriaSerializer, ProdutoListSerializer, ProdutoDetailSerializer, RegisterSerializer, CustomTokenObtainPairSerializer, PedidoSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from django.utils.http import urlsafe_base64_decode
-from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.encoding import force_str, force_bytes
+from django.core.mail import EmailMessage
 from django.utils.timezone import now
+from django.views.decorators.csrf import csrf_exempt
 from .tokens import account_activation_token
 from decimal import Decimal
+import json
 
 class CategoriaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Categoria.objects.all()
@@ -126,3 +128,38 @@ def verificar_cupom(request):
     except Cupom.DoesNotExist:
         return Response({"valido": False, "erro": "Cupom inválido."})
     
+class CriarPedidoView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = PedidoSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            pedido = serializer.save()
+            return Response({'success': True, 'pedido_id': pedido.id}, status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)  # ⬅️ Isto vai mostrar o erro no terminal
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def reenviar_confirmacao(request):
+    email = request.data.get("email")
+    try:
+        user = User.objects.get(email=email)
+        if user.is_active:
+            return Response({"error:" "Conta já está ativa."}, status=400)
+        
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = account_activation_token.make_token(user)
+        activation_link = f"http://localhost:8000/api/activate/{uid}/{token}/"
+
+        email_subject = "Ative sua conta no Direto no Ponto"
+        email_body = f"Olá {user.username}, \n\n Clique no link abaixo para ativar sua conta: \n{activation_link}"
+
+        email = EmailMessage(subject=email_subject, body=email_body, to=[user.email])
+        email.send()
+
+        return Response({"message": "E-mail de ativação reenviado com sucesso!"})
+    except User.DoesNotExist:
+        return Response({"error": "Usuário não encontrado."}, status=404)

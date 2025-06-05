@@ -14,6 +14,9 @@ import Resumos from "./pages/Resumos";
 import ProdutoDetalhe from "./pages/ProdutoDetalhe";
 import Carrinho from "./pages/Carrinho";
 import { CartProvider } from "./context/CartContext";
+import Checkout from "./pages/Checkout";
+import CadastroConcluido from "./pages/CadastroConcluido";
+import AtivarConta from "./pages/AtivarConta";
 
 const queryClient = new QueryClient();
 
@@ -34,8 +37,11 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/materiais/resumos" element={<Resumos />} />
               <Route path="/produtos/:slug" element={<ProdutoDetalhe />} />
+              <Route path="/cadastro-concluido" element={<CadastroConcluido />} />
+              <Route path="/ativar-conta" element={<AtivarConta />} />
               <Route path="/login" element={<Login />} />
               <Route path="/carrinho" element={<Carrinho />}/>
+              <Route path="/checkout" element={<Checkout />}/>
               <Route 
                 path="/area-do-aluno"
                 element={

@@ -46,7 +46,7 @@ const Features = () => {
             </div>
           ))}
         </div>
-
+        {/*
         <div className="mt-16 p-8 bg-primary-50 rounded-xl border border-primary-100">
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-2/3 mb-6 md:mb-0 md:mr-6">
@@ -78,6 +78,7 @@ const Features = () => {
             </div>
           </div>
         </div>
+        */}
       </div>
     </section>
   );

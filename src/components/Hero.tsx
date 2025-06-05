@@ -23,7 +23,7 @@ const Hero = () => {
               Conhecer Mais
             </Button>
           </div>
-          
+          {/*
           <div className="w-full max-w-5xl mt-8 md:mt-16 bg-gradient-to-b from-white to-gray-100 rounded-lg shadow-xl p-4 md:p-8 flex flex-col md:flex-row gap-8 items-center">
             <div className="w-full md:w-1/2 space-y-4">
               <h2 className="text-2xl font-bold">Estudos simplificados e objetivos</h2>
@@ -50,6 +50,7 @@ const Hero = () => {
               </div>
             </div>
           </div>
+          */}
         </div>
       </div>
     </section>

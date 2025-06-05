@@ -10,6 +10,9 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.urls import reverse
 from .tokens import account_activation_token
+from pedidos.models import Pedido, ItemPedido
+from produtos.models import Produto, Cupom
+from aprovados.models import Aprovado
 
 
 class CategoriaSerializer(serializers.ModelSerializer):
@@ -88,10 +91,48 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         except User.DoesNotExist:
             username = login_input
 
-        user = authenticate(username=username, password=password)
-
-        if not user:
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
             raise serializers.ValidationError("Usuário ou senha inválidos.")
+        
+        if not user.check_password(password):
+            raise serializers.ValidationError("Usuário ou senha inválidos.")
+        
+        if not user.is_active:
+            raise serializers.ValidationError("Conta inativa. Verifique seu e-mail para ativar.")
         
         data = super().validate({"username": username, "password": password})
         return data
+
+class ItemPedidoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemPedido
+        fields = ['produto', 'quantidade']
+
+class PedidoSerializer(serializers.ModelSerializer):
+    itens = ItemPedidoSerializer(many=True)
+
+    class Meta:
+        model = Pedido
+        fields = ['id', 'itens', 
+                  'subtotal', 'desconto', 'total', 
+                  'cupom', 'status', 'criado_em']
+    
+    def create(self, validated_data):
+        request = self.context.get('request')
+        usuario = request.user
+
+        itens_data = validated_data.pop('itens')
+        pedido = Pedido.objects.create(usuario=usuario, **validated_data)
+
+        for item_data in itens_data:
+            item = ItemPedido.objects.create(**item_data)
+            pedido.itens.add(item)
+
+        return pedido
+    
+class AprovadoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Aprovado
+        fields = ["id", "nome", "cargo", "foto"]

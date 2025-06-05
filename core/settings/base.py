@@ -24,6 +24,8 @@ INSTALLED_APPS = [
     'taggit',
     'api',
     'produtos',
+    'pedidos',
+    'aprovados',
 ]
 
 MIDDLEWARE = [

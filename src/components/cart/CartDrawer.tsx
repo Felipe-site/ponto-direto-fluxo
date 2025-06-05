@@ -1,6 +1,7 @@
 import { useCart } from "@/context/CartContext";
 import { X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 
 interface Props {
   isOpen: boolean;
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export const CartDrawer = ({ isOpen, onClose }: Props) => {
+  const navigate = useNavigate();
   const { items, removeFromCart, incrementar, decrementar } = useCart();
   const subtotal = items.reduce((acc, item) => acc + item.preco * item.quantidade, 0)
 
@@ -77,7 +79,7 @@ export const CartDrawer = ({ isOpen, onClose }: Props) => {
           Ver carrinho
         </button>
       </Link>
-      <button className="w-full bg-green-600 text-white py-3 rounded hover:bg-green-700">
+      <button onClick={() => navigate("/checkout")} className="w-full bg-green-600 text-white py-3 rounded hover:bg-green-700">
         Finalizar compra
       </button>
     </div>

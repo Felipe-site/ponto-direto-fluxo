@@ -13,6 +13,12 @@ interface CartContextType {
   getQuantity: () => number;
   incrementar: (id: number) => void;
   decrementar: (id: number) => void;
+
+  cupom: any;
+  setCupom: (cupom: any) => void;
+  subtotal: number;
+  valorDesconto: number;
+  totalFinal: number;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -62,6 +68,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const getQuantity = () =>
     items.reduce((acc, item) => acc + item.quantidade, 0);
 
+  const [cupom, setCupom] = useState<any>(null);
+
+  const subtotal = items.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
+
+  const valorDesconto = cupom?.desconto || 0;
+
+  const totalFinal = subtotal - valorDesconto;
+
   return (
     <CartContext.Provider
       value={{
@@ -72,6 +86,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         getQuantity,
         incrementar,
         decrementar,
+        cupom,
+        setCupom,
+        subtotal,
+        valorDesconto,
+        totalFinal,
       }}
     >
       {children}
