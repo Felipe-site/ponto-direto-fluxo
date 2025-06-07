@@ -20,6 +20,9 @@ const Footer = () => {
               Resumos e materiais de estudo direto ao ponto para otimizar seu aprendizado 
               e conquistar seus objetivos acadêmicos.
             </p>
+            <p className="text-gray-400 text-sm">
+              CNPJ: 59.662.477/0001-85 | DFL ENSINO
+            </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-primary-400">
                 <Instagram size={20} />
@@ -29,9 +32,6 @@ const Footer = () => {
               </a>
               <a href="#" className="text-gray-400 hover:text-primary-400">
                 <Facebook size={20} />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-primary-400">
-                <Linkedin size={20} />
               </a>
             </div>
           </div>
@@ -70,17 +70,18 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-start">
                 <MapPin className="h-5 w-5 text-primary-400 mr-2 flex-shrink-0 mt-0.5" />
-                <span className="text-gray-400">Av. Exemplo, 1000 - São Paulo, SP</span>
+                <span className="text-gray-400">Rua Visconde de Pirajá, 414, Sala 718 - Rio de Janeiro, RJ</span>
               </li>
               <li className="flex items-center">
                 <Phone className="h-5 w-5 text-primary-400 mr-2 flex-shrink-0" />
-                <span className="text-gray-400">(11) 9999-9999</span>
+                <span className="text-gray-400">(21) 96406-0760</span>
               </li>
               <li className="flex items-center">
                 <Mail className="h-5 w-5 text-primary-400 mr-2 flex-shrink-0" />
-                <span className="text-gray-400">contato@diretonoponto.com</span>
+                <span className="text-gray-400">dflensinoltda@gmail.com</span>
               </li>
             </ul>
+            {/*
             <div className="mt-6">
               <h4 className="text-sm font-semibold mb-2">Assine nossa newsletter</h4>
               <div className="flex">
@@ -94,6 +95,7 @@ const Footer = () => {
                 </button>
               </div>
             </div>
+            */}
           </div>
         </div>
 

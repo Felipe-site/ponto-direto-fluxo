@@ -5,3 +5,6 @@ from .models import Aprovado
 class AprovadoAdmin(admin.ModelAdmin):
     list_display = ("nome", "cargo", "ordem")
     ordering = ("ordem",)
+
+    class Media:
+        js = ["aprovados/js/admin_extra_button.js"]
