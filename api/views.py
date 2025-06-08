@@ -16,7 +16,7 @@ from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
 from .tokens import account_activation_token
 from decimal import Decimal
-import json
+import json, requests, os
 
 class CategoriaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Categoria.objects.all()
@@ -52,12 +52,27 @@ class ProdutoViewSet(viewsets.ReadOnlyModelViewSet):
         return queryset
 
 class RegisterView(generics.CreateAPIView):
-
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
 
     def post(self, request):
+        recaptcha_token = request.data.get('recaptcha_token')
+
+        if not recaptcha_token:
+            return Response({'erro': 'Token do reCAPTCHA ausente.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        recaptcha_response = requests.post(
+            'https://www.google.com/recaptcha/api/siteverify',
+            data = {
+                'secret': os.environ.get('RECAPTCHA_SECRET_KEY'),
+                'response': recaptcha_token
+            }
+        ).json()
+
+        if not recaptcha_response.get('success'):
+            return Response({'erro': 'Falha na verificação do reCAPTCHA.'}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

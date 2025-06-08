@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import ReCAPTCHA from "react-google-recaptcha";
 import api from "@/services/api";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -8,6 +9,10 @@ import Footer from "@/components/Footer";
 const Login = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
+
+    const recaptchaRef = useRef<ReCAPTCHA>(null);
+    const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+    const [recaptchaLoginToken, setRecaptchaLoginToken] = useState<string | null>(null);
   
     const [loginData, setLoginData] = useState({ username: "", password: "" });
     const [registerData, setRegisterData] = useState({ email: "", password: "" });
@@ -37,9 +42,16 @@ const Login = () => {
   
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!recaptchaLoginToken) {
+      alert("Pro favor, confirme que você não é um robô.");
+      return;
+    }
+    
     if (!validateLogin()) return;
+
     try {
-      await login(loginData.username, loginData.password);
+      await login(loginData.username, loginData.password, recaptchaLoginToken);
       navigate("/area-do-aluno");
     } catch (error: any) {
       console.log("ERRO DE LOGIN: ", error?.response?.data);
@@ -56,22 +68,27 @@ const Login = () => {
     }
   };
 
-  
     const handleRegisterSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       if (!validateRegister()) return;
+
+      if(!recaptchaToken) {
+        alert("Por favor, confirme que você não é um robô.");
+        return;
+      }
+
       try {
         await api.post("/register/", {
           username: registerData.email.split("@")[0],
           email: registerData.email,
           password: registerData.password,
+          recaptcha_token: recaptchaToken,
         });
         navigate("/cadastro-concluido");
       } catch {
         alert("Erro ao cadastrar.");
       }
     };
-  
     return (
       <>
         <Navbar />
@@ -131,6 +148,10 @@ const Login = () => {
                     Perdeu sua senha?
                     </a>
                 </div>
+                <ReCAPTCHA 
+                  sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                  onChange={(token) => setRecaptchaLoginToken(token)}
+                />
                 <button
                     type="submit"
                     className="w-full bg-sky-500 text-white py-2 rounded font-semibold hover:bg-sky-600"
@@ -186,6 +207,11 @@ const Login = () => {
                     </a>
                     .
                 </p>
+                <ReCAPTCHA
+                  sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                  onChange={(token) => setRecaptchaToken(token)}
+                  ref={recaptchaRef}
+                />
                 <button
                     type="submit"
                     className="w-full bg-sky-500 text-white py-2 rounded font-semibold hover:bg-sky-600"
