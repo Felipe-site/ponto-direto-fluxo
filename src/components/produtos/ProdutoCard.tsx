@@ -41,7 +41,7 @@ export const ProdutoCard = ({ produto, onAddToCart }: ProdutoCardProps) => {
         )}
       
         <div className="absolute top-3 left-3">
-          <span className="px-3 py-1 bg-gabarito text-white text-xs font-medium rounded-full">
+          <span className="px-3 py-1 bg-lilas text-white text-xs font-medium rounded-full">
            {produto.categoria_nome}
          </span>
         </div>
@@ -59,7 +59,7 @@ export const ProdutoCard = ({ produto, onAddToCart }: ProdutoCardProps) => {
           <div className="flex flex-col space-y-2">
             <button
               onClick={handleAddToCart}
-              className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md"
+              className="w-full bg-gabarito hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md"
             >
               <ShoppingCart size={18} className="mr-2 inline" />
               Adicionar ao carrinho
