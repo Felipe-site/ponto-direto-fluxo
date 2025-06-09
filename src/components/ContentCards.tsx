@@ -6,6 +6,7 @@ import api from "@/services/api";
 import { Produto } from "@/types/produto";
 import { ProdutoCard } from "./produtos/ProdutoCard";
 import { useCart } from "@/context/CartContext";
+import { toast } from "sonner";
 
 interface ContentCardProps {
   produto: Produto;

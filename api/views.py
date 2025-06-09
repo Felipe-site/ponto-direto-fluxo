@@ -17,6 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .tokens import account_activation_token
 from decimal import Decimal
 import json, requests, os
+from django.db.models import Q
 
 class CategoriaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Categoria.objects.all()
@@ -36,18 +37,29 @@ class ProdutoViewSet(viewsets.ReadOnlyModelViewSet):
     
     def get_queryset(self):
         queryset = Produto.objects.all()
+        q = self.request.query_params.get('q', None)
         categoria = self.request.query_params.get('categoria', None)
+        tipo = self.request.query_params.get('tipo', None)
         tag = self.request.query_params.get('tag', None)
         destaque = self.request.query_params.get('destaque', None)
         
         if categoria:
             queryset = queryset.filter(categoria__slug=categoria)
+        if tipo:
+            queryset = queryset.filter(tipo=tipo)
         if tag:
             queryset = queryset.filter(tag=tag)
         if destaque:
             # Converte string 'true' para booleano
             destaque_bool = destaque.lower() == 'true'
             queryset = queryset.filter(destaque=destaque_bool)
+        if q:
+            queryset = queryset.filter(
+                Q(titulo__icontains=q) |
+                Q(concurso__icontains=q) |
+                Q(tags__name__icontains=q)
+            ).distinct()
+        
             
         return queryset
 

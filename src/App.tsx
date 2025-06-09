@@ -17,6 +17,7 @@ import { CartProvider } from "./context/CartContext";
 import Checkout from "./pages/Checkout";
 import CadastroConcluido from "./pages/CadastroConcluido";
 import AtivarConta from "./pages/AtivarConta";
+import Busca from "./pages/Busca";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/busca" element={<Busca />} />
               <Route path="/materiais/resumos" element={<Resumos />} />
               <Route path="/produtos/:slug" element={<ProdutoDetalhe />} />
               <Route path="/cadastro-concluido" element={<CadastroConcluido />} />

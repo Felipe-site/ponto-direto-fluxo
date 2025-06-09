@@ -21,6 +21,9 @@ export default {
 		},
 		extend: {
 			colors: {
+				gabarito: "#3f917e",
+				gabaritoHover: "#347c6a",
+				lilas: "#697097",
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',

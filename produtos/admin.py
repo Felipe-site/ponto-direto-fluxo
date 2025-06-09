@@ -15,10 +15,10 @@ class CategoriaAdmin(admin.ModelAdmin):
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
-    list_display = ('titulo', 'categoria', 'concurso', 
+    list_display = ('titulo', 'categoria', 'tipo', 'concurso', 
                     'codigo', 'preco', 'tag', 'destaque', 
                     'exibir_imagem', 'data_atualizacao')
-    list_filter = ('categoria', 'concurso', 
+    list_filter = ('categoria', 'tipo', 'concurso', 
                    'tag', 'destaque', 'data_criacao')
     search_fields = ('titulo', 'codigo', 'descricao', 'concurso')
     prepopulated_fields = {'slug': ('titulo',)}

@@ -8,14 +8,14 @@ const Hero = () => {
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center text-center space-y-4 md:space-y-8">
           <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl">
-            Direto No <span className="text-primary-500">Ponto</span>
+            Direto No <span className="text-gabarito">Ponto</span>
           </h1>
           <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl">
             Resumos e materiais de estudo direto ao ponto para você otimizar seu aprendizado 
             e conquistar seus objetivos acadêmicos.
           </p>
           <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-            <Button className="bg-primary-500 hover:bg-primary-600 h-11 px-8 text-base">
+            <Button className="bg-gabarito hover:bg-gabaritoHover h-11 px-8 text-base">
               Explorar Materiais
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>

@@ -30,7 +30,7 @@ const Navbar = () => {
           {/* Logo e nome */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center">
-              <div className="h-9 w-auto bg-primary-500 rounded-md flex items-center justify-center px-3 text-white font-bold">
+              <div className="h-9 w-auto bg-gabarito rounded-md flex items-center justify-center px-3 text-white font-bold">
                 D<span className="text-xs">No</span>P
               </div>
               <span className="ml-2 text-lg font-semibold text-gray-900">Direto no Ponto</span>
@@ -41,7 +41,7 @@ const Navbar = () => {
           <div className="hidden md:flex md:items-center md:space-x-6 flex-1">
             <SearchBar />
             
-            <Link to="/area-do-aluno" className="text-gray-600 hover:text-primary-600 flex items-center">
+            <Link to="/area-do-aluno" className="text-gray-600 hover:text-gabarito flex items-center">
               <User className="h-5 w-5 mr-1" />
               <span>Área de Alunos</span>
             </Link>
@@ -49,7 +49,7 @@ const Navbar = () => {
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-gray-600 hover:text-primary-600">
+                  <NavigationMenuTrigger className="text-gray-600 hover:text-gabarito">
                     Materiais
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -90,7 +90,7 @@ const Navbar = () => {
           <div className="md:hidden">
             <button
               onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-primary-500 hover:bg-gray-100 focus:outline-none"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gabarito hover:bg-gray-100 focus:outline-none"
               aria-expanded="false"
             >
               <span className="sr-only">Abrir menu</span>
@@ -109,13 +109,13 @@ const Navbar = () => {
             </div>
             <Link 
               to="/login" 
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary-500 hover:bg-gray-100"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gabarito hover:bg-gray-100"
             >
               Área de Alunos
             </Link>
             <div className="relative">
               <button
-                className="w-full flex items-center justify-between px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary-500 hover:bg-gray-100"
+                className="w-full flex items-center justify-between px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gabarito hover:bg-gray-100"
               >
                 Materiais
                 <ChevronDown className="h-4 w-4" />
@@ -123,13 +123,13 @@ const Navbar = () => {
               <div className="pl-4">
                 <Link
                   to="/materiais/resumos"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary-500 hover:bg-gray-100"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gabarito hover:bg-gray-100"
                 >
                   Resumos
                 </Link>
                 <Link
                   to="/materiais/combos"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary-500 hover:bg-gray-100"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gabarito hover:bg-gray-100"
                 >
                   Combos
                 </Link>
@@ -137,7 +137,7 @@ const Navbar = () => {
             </div>
             <Link 
               to="/carrinho" 
-              className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary-500 hover:bg-gray-100"
+              className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gabarito hover:bg-gray-100"
             >
               <ShoppingCart className="h-5 w-5 mr-2" />
               Carrinho (0)

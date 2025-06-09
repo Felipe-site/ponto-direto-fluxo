@@ -16,7 +16,7 @@ const Resumos = () => {
     queryKey: ['produtos', 'categoria=resumos'],
     queryFn: async () => {
       const response = await api.get('/produtos/', {
-        params: { categoria: 'resumos' }
+        params: { tipo: 'resumo' }
       });
       console.log("🔍 RESPOSTA DA API:", response.data);
       return response.data;

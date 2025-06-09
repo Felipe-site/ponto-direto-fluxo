@@ -46,6 +46,14 @@ class Produto(models.Model):
         ("CON", "Controle"),
         ("TI", "Tecnologia da Informação"),
     ]
+
+    TIPOS = [
+        ('resumo', 'Resumo'),
+        ('combo', 'Combo'),
+        ('flashcard', 'Flashcard'),
+        ('mapas', 'Mapas'),
+        ('recurso', 'Recurso'),
+    ]
     
     # Campos principais
     codigo = models.CharField(max_length=16, unique=True, blank=True, null=True, editable=False)
@@ -60,6 +68,7 @@ class Produto(models.Model):
 
     # Classificação
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='produtos')
+    tipo = models.CharField(max_length=20, choices=TIPOS, default='resumo')
     concurso = models.CharField(max_length=20)
     tag = models.CharField(max_length=20, choices=TAGS_CHOICES, default='Regular')
     tags = TaggableManager(blank=True)
