@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { ShoppingCart, Eye } from "lucide-react";
 import { Produto } from "@/types/produto";
+import { useCart } from "@/context/CartContext";
+import { toast } from "sonner";
 
 interface ProdutoCardProps {
   produto: Produto;
@@ -8,6 +10,14 @@ interface ProdutoCardProps {
 }
 
 export const ProdutoCard = ({ produto, onAddToCart }: ProdutoCardProps) => {
+
+  const { addToCart } = useCart();
+
+  const handleAddToCart = () => {
+    addToCart(produto);
+    toast.success(`${produto.titulo} adicionado ao carrinho`);
+  }
+
   return (
     <div className="overflow-hidden flex flex-col h-full border border-gray-200 rounded-lg bg-white">
       <div className="relative bg-white aspect-[2/3] w-full max-h-[340px]">
@@ -29,11 +39,17 @@ export const ProdutoCard = ({ produto, onAddToCart }: ProdutoCardProps) => {
             </div>
           </div>
         )}
+      
+        <div className="absolute top-3 left-3">
+          <span className="px-3 py-1 bg-gabarito text-white text-xs font-medium rounded-full">
+           {produto.categoria_nome}
+         </span>
+        </div>
       </div>
+
 
       <div className="p-4 flex flex-col flex-grow">
         <h3 className="font-semibold text-sm mb-2 leading-tight line-clamp-2">{produto.titulo}</h3>
-        <div className="mt-auto pt-4">
           <div className="text-primary-600 font-bold text-xl mb-1">
             R${Number(produto.preco).toFixed(2).replace(".", ",")}
           </div>
@@ -42,7 +58,7 @@ export const ProdutoCard = ({ produto, onAddToCart }: ProdutoCardProps) => {
           </div>
           <div className="flex flex-col space-y-2">
             <button
-              onClick={() => onAddToCart?.(produto)}
+              onClick={handleAddToCart}
               className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md"
             >
               <ShoppingCart size={18} className="mr-2 inline" />
@@ -55,7 +71,6 @@ export const ProdutoCard = ({ produto, onAddToCart }: ProdutoCardProps) => {
               </button>
             </Link>
           </div>
-        </div>
       </div>
     </div>
   );

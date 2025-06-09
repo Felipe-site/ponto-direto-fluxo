@@ -13,6 +13,12 @@ interface ContentCardProps {
 }
 
 const ContentCard = ({ produto }: ContentCardProps) => {
+  const { addToCart } = useCart();
+  const handleAddToCart = () => {
+    addToCart(produto);
+    toast.success(`${produto.titulo} adicionado ao carrinho`);
+  };
+
   return (
     <div className="overflow-hidden flex flex-col h-full border border-gray-200 rounded-lg bg-white">
       <div className="relative bg-white aspect-[2/3] w-full max-h-[340px]">
@@ -47,10 +53,10 @@ const ContentCard = ({ produto }: ContentCardProps) => {
           <div className="mt-4 space-y-2">
             <button
               className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md transition-colors"
-              onClick={() => alert(`Produto ${produto.titulo} adicionado ao carrinho.`)}
+              onClick={handleAddToCart}
               >
                 Adicionar ao carrinho
-              </button>    
+            </button>    
               <Link to={`/produtos/${produto.slug}`}>
                 <button className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-md transition-colors">
                   Ver detalhes

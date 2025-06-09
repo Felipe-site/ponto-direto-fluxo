@@ -9,9 +9,11 @@ import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/services/api";
 import { ProdutoDetalhado } from "@/types/produto";
+import { useCart } from "@/context/CartContext";
 
 const ProdutoDetalhe = () => {
   const { slug } = useParams();
+  const { addToCart } = useCart();
   
   const { data: produto, isLoading, error } = useQuery({
     queryKey: ['produto', slug],
@@ -24,19 +26,17 @@ const ProdutoDetalhe = () => {
 
   const comprarAgora = () => {
     toast.success("Produto adicionado ao carrinho! Redirecionando para o checkout...");
-    // Implementação da lógica de compra imediata
   };
 
   const adicionarAoCarrinho = () => {
     if (produto) {
+      addToCart(produto);
       toast.success(`${produto.titulo} adicionado ao carrinho`);
     }
-    // Implementação da lógica de adicionar ao carrinho
   };
 
   const verAmostra = () => {
     toast("Carregando amostra do material...");
-    // Implementação da lógica de visualização da amostra
   };
 
   if (isLoading) {
