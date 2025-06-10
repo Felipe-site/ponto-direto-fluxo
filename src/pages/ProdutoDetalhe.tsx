@@ -1,5 +1,5 @@
 
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -10,10 +10,13 @@ import { useQuery } from "@tanstack/react-query";
 import api from "@/services/api";
 import { ProdutoDetalhado } from "@/types/produto";
 import { useCart } from "@/context/CartContext";
+import { useRef } from "react";
 
 const ProdutoDetalhe = () => {
   const { slug } = useParams();
   const { addToCart } = useCart();
+  const navigate = useNavigate();
+  const amostraRef = useRef<HTMLDivElement | null>(null);
   
   const { data: produto, isLoading, error } = useQuery({
     queryKey: ['produto', slug],
@@ -25,8 +28,14 @@ const ProdutoDetalhe = () => {
   });
 
   const comprarAgora = () => {
-    toast.success("Produto adicionado ao carrinho! Redirecionando para o checkout...");
-  };
+    if (produto) {
+      addToCart(produto);
+      toast.success("Produto adicionado ao carrinho! Redirecionando para o checkout...");
+      setTimeout(() => {
+        navigate("/checkout");
+      }, 1000);
+    }
+  }
 
   const adicionarAoCarrinho = () => {
     if (produto) {
@@ -36,7 +45,9 @@ const ProdutoDetalhe = () => {
   };
 
   const verAmostra = () => {
-    toast("Carregando amostra do material...");
+    if (amostraRef.current) {
+      amostraRef.current.scrollIntoView({ behavior: "smooth"});
+    }
   };
 
   if (isLoading) {
@@ -66,7 +77,6 @@ const ProdutoDetalhe = () => {
     );
   }
 
-  // Array de features para exibição
   const features = [
     "Material Assertivo: Elaborado com as últimas novidades legislativas, jurisprudências e assuntos exigidos em provas.",
     "Material Digital: Não se limite a sua mesa de estudos! Estude do seu jeito, em qualquer lugar e a qualquer hora.",
@@ -214,6 +224,22 @@ const ProdutoDetalhe = () => {
               )}
             </div>
           </div>
+
+          {produto.amostra && (
+            <div ref={amostraRef} className="mt-16">
+              <h2 className="text-2xl font-bold text-center mb-6">Veja nosso material por dentro!</h2>
+              <div className="w-full max-w-5xl mx-auto h-[70vh] px-4">
+                <iframe
+                  src={produto.amostra.startsWith("http")
+                    ? produto.amostra
+                    : `https://www.diretonoponto.com.br${produto.amostra}`
+                  }
+                  className="w-full h-full rounded shadow border"
+                  allowFullScreen
+                  />
+              </div> 
+            </div>  
+          )}
           
           {/* Seção de produtos relacionados (opcional) */}
           <div className="mt-12">

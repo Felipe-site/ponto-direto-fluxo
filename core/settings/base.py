@@ -38,6 +38,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'produtos.middleware.AllowIframeForMediaMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'

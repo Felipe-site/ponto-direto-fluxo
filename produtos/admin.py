@@ -44,6 +44,9 @@ class ProdutoAdmin(admin.ModelAdmin):
         ('Imagem', {
             'fields': ('imagem',)
         }),
+        ('Amostra', {
+            'fields': ('amostra',)
+        }),
         ('Combos', {
             'fields': ('is_combo', 'produtos_inclusos')
         }),

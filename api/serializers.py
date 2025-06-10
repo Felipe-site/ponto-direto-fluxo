@@ -35,7 +35,8 @@ class ProdutoListSerializer(serializers.ModelSerializer, TaggitSerializer):
         model = Produto
         fields = ('id', 'titulo', 'slug', 'descricao', 'descricao_curta', 'preco', 
                   'parcelas', 'preco_parcelado', 'preco_antigo', 'imagem', 'categoria', 
-                  'categoria_nome', 'tag', 'categoria_slug', 'tags', 'detalhes', 'tipo')
+                  'categoria_nome', 'tag', 'categoria_slug', 'tags', 'detalhes', 'tipo', 
+                  'amostra')
 
 class ProdutoDetailSerializer(serializers.ModelSerializer, TaggitSerializer):
     categoria_nome = serializers.ReadOnlyField(source='categoria.nome')

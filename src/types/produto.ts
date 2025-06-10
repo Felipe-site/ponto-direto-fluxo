@@ -22,6 +22,7 @@ export interface Produto {
   parcelas?: number;
   preco_parcelado?: number;
   imagem?: string | null;
+  amostra?: string;
   categoria: number;
   categoria_nome: string;
   categoria_slug: string;

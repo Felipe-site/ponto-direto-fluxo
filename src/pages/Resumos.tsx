@@ -18,7 +18,6 @@ const Resumos = () => {
       const response = await api.get('/produtos/', {
         params: { tipo: 'resumo' }
       });
-      console.log("🔍 RESPOSTA DA API:", response.data);
       return response.data;
     }
   });
