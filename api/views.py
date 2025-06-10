@@ -16,7 +16,7 @@ from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
 from .tokens import account_activation_token
 from decimal import Decimal
-import json, requests, os
+import json, requests, os # type: ignore
 from django.db.models import Q
 
 class CategoriaViewSet(viewsets.ReadOnlyModelViewSet):
