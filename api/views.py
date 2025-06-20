@@ -29,6 +29,7 @@ from urllib.parse import urlencode
 from accounts.models import Profile
 from django_filters.rest_framework import CharFilter, FilterSet #type: ignore
 from rest_framework import filters
+from django.db import connection
 
 class CategoriaViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Categoria.objects.all()
@@ -46,12 +47,26 @@ class ProdutoFilter(FilterSet):
         fields = ['categoria', 'tipo', 'tag', 'destaque']
     
     def filtro_geral(self, queryset, name, value):
-        return queryset.filter(
-            Q(titulo__icontains=value) |
-            Q(concurso__icontains=value) |
-            Q(tags__name__icontains=value) |
-            Q(categorias__nome__icontains=value)
-        ).distinct()
+        base_query = (
+            Q(titulo__iunaccent=value) |
+            Q(concurso__iunaccent=value) |
+            Q(tags__name__iunaccent=value) |
+            Q(categorias__nome__iunaccent=value)
+        )
+    
+        if connection.vendor == 'postgresql':
+            similar_query = (
+                Q(titulo__triagram_similar=value) |
+                Q(concurso__trigram_similar=value) |
+                Q(tags__name__trigram_similar=value) |
+                Q(categorias__nome__trigram_similar=value)
+            )
+
+            final_query = base_query | similar_query
+        else:
+            final_query = base_query
+        
+        return queryset.filter(final_query).distinct()
 
 class ProdutoViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Produto.objects.filter(ativo=True).prefetch_related('categorias')

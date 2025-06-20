@@ -24,6 +24,7 @@ export interface Produto {
   preco_parcelado?: number;
   imagem?: string | null;
   amostra?: string;
+  categorias: Categoria[];
   categoria: number;
   categoria_nome: string;
   categoria_slug: string;

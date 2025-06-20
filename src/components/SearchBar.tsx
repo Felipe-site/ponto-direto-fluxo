@@ -11,8 +11,10 @@ const SearchBar = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if(searchTerm.trim()) {
-      navigate('/materiais/resumos');
+    const trimmedSearchTerm = searchTerm.trim();
+
+    if (trimmedSearchTerm) {
+      navigate(`/busca?q=${encodeURIComponent(trimmedSearchTerm)}`);
     }
   };
 

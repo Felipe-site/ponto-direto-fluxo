@@ -6,10 +6,9 @@ import { toast } from "sonner";
 
 interface ProdutoCardProps {
   produto: Produto;
-  onAddToCart?: (produto: Produto) => void;
 }
 
-export const ProdutoCard = ({ produto, onAddToCart }: ProdutoCardProps) => {
+export const ProdutoCard = ({ produto }: ProdutoCardProps) => {
 
   const { addToCart } = useCart();
 
@@ -17,6 +16,9 @@ export const ProdutoCard = ({ produto, onAddToCart }: ProdutoCardProps) => {
     addToCart(produto);
     toast.success(`${produto.titulo} adicionado ao carrinho`);
   }
+
+  const categoriasVisiveis = produto.categorias.slice(0, 1);
+  const categoriasOcultas = produto.categorias.length - categoriasVisiveis.length;
 
   return (
     <div className="overflow-hidden flex flex-col h-full border border-gray-200 rounded-lg bg-white">
@@ -40,10 +42,23 @@ export const ProdutoCard = ({ produto, onAddToCart }: ProdutoCardProps) => {
           </div>
         )}
       
-        <div className="absolute top-3 left-3">
-          <span className="px-3 py-1 bg-lilas text-white text-xs font-medium rounded-full">
-           {produto.categoria_nome}
-         </span>
+        <div className="absolute top-3 left-3 flex flex-wrap gap-1">
+          {categoriasVisiveis.map(cat => (
+            <span
+              key={cat.id}
+              className="px-2 py-0.5 bg-lilas text-white text-xs font-medium rounded-full shadow-md"
+            >
+              {cat.nome}
+            </span>
+          ))}
+
+          {categoriasOcultas > 0 && (
+            <span className="px-2 py-0.5 bg-gray-500 text-white text-xs font-medium rounded-full shadow-md">
+              +{categoriasOcultas}
+            </span>
+
+          )}
+
         </div>
       </div>
 

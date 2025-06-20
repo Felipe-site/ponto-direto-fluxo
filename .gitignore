@@ -24,6 +24,7 @@ dist-ssr
 *.sw?
 .env.dev
 .env.prod
+.env
 *.pyo
 *.pyc
 __pycache__/
