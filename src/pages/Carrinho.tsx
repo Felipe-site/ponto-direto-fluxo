@@ -6,34 +6,18 @@ import Footer from "@/components/Footer";
 
 export default function Carrinho() {
   const navigate = useNavigate();
-  const { items, removeFromCart, incrementar, decrementar } = useCart();
-  const subtotal = items.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
+  const { items, removeFromCart, incrementar, decrementar, subtotal, cupom, valorDesconto, totalFinal, aplicarCupom, removerCupom } = useCart();
   const [codigoCupom, setCodigoCupom] = useState("");
-  const [cupom, setCupom] = useState<any>(null);
   const [erroCupom, setErroCupom] = useState<string | null>(null);
 
-  const aplicarCupom = async () => {
+  const handleAplicarCupom = async () => {
     setErroCupom(null);
     try {
-      const res = await fetch("http://localhost:8000/api/verificar-cupom/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ codigo: codigoCupom, total: subtotal }),
-      });
-      const data = await res.json();
-      if (data.valido) {
-        setCupom(data);
-      } else {
-        setCupom(null);
-        setErroCupom(data.erro || "Cupom inválido.");
-      }
-    } catch (e) {
-      setErroCupom("Erro ao validar cupom.");
+      await aplicarCupom(codigoCupom);
+    } catch (e: any) {
+      setErroCupom(e.message || "Erro ao validar cupom.")
     }
   };
-
-  const valorDesconto = cupom?.desconto || 0;
-  const totalFinal = subtotal - valorDesconto;
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth"});
@@ -43,8 +27,8 @@ export default function Carrinho() {
     <>
       <Navbar />
 
-      <div className="max-w-6xl mx-auto p-4 min-h-[100vh] pt-20">
-        <h1 className="text-3xl font-bold mb-6 text-center">Carrinho</h1>
+      <div className="max-w-6xl mx-auto p-4 min-h-[100vh]">
+        <h1 className="text-3xl font-bold mb-6 text-center pt-20">Carrinho</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Coluna esquerda: Produtos */}
@@ -103,7 +87,7 @@ export default function Carrinho() {
                   className="border p-2 rounded flex-1"
                 />
                 <button
-                  onClick={aplicarCupom}
+                  onClick={handleAplicarCupom}
                   className="bg-gray-800 text-white px-4 rounded"
                 >
                   Aplicar Cupom
@@ -131,7 +115,16 @@ export default function Carrinho() {
                     ? `${cupom.valor}%`
                     : `R$ ${cupom.valor}`})
                 </span>
-                <span>-R$ {valorDesconto.toFixed(2)}</span>
+                <div className="flex items-center">
+                  <span>-R$ {valorDesconto.toFixed(2)}</span>
+                  <button
+                      onClick={removerCupom}
+                      className="ml-2 text-red-500 hover:text-red-700 font-bold"
+                      title="Remover cupom"
+                    >
+                      [x]
+                  </button>
+                </div>
               </div>
             )}
 

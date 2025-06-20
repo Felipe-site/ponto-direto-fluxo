@@ -26,27 +26,40 @@ class DetalhesProdutoSerializer(serializers.ModelSerializer):
         exclude = ('produto',)
 
 class ProdutoListSerializer(serializers.ModelSerializer, TaggitSerializer):
-    categoria_nome = serializers.ReadOnlyField(source='categoria.nome')
     preco_parcelado = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
-    categoria_slug = serializers.ReadOnlyField(source='categoria.slug')
+    categorias = CategoriaSerializer(many=True, read_only=True)
     tags = TagListSerializerField()
+    amostra_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Produto
         fields = ('id', 'titulo', 'slug', 'descricao', 'descricao_curta', 'preco', 
-                  'parcelas', 'preco_parcelado', 'preco_antigo', 'imagem', 'categoria', 
-                  'categoria_nome', 'tag', 'categoria_slug', 'tags', 'detalhes', 'tipo', 
-                  'amostra')
+                  'parcelas', 'preco_parcelado', 'preco_antigo', 'imagem', 'categorias', 
+                  'tag', 'tags', 'detalhes', 'tipo', 
+                  'amostra', 'amostra_url')
+        
+    def get_amostra_url(self, obj):
+        request = self.context.get('request')
+        if obj.amostra:
+            return request.build_absolute_uri(obj.amostra.url)
+        return None
 
 class ProdutoDetailSerializer(serializers.ModelSerializer, TaggitSerializer):
-    categoria_nome = serializers.ReadOnlyField(source='categoria.nome')
+    categorias = CategoriaSerializer(many=True, read_only=True)
     detalhes = DetalhesProdutoSerializer(read_only=True)
     preco_parcelado = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     tags = TagListSerializerField()
+    amostra_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Produto
         fields = '__all__'
+    
+    def get_amostra_url(self, obj):
+        request = self.context.get('request')
+        if obj.amostra:
+            return request.build_absolute_uri(obj.amostra.url)
+        return None
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -80,6 +93,26 @@ class RegisterSerializer(serializers.ModelSerializer):
         email.send()
 
         return user
+    
+class ProdutoMaterialSerializer(serializers.ModelSerializer):
+    download_url = serializers.SerializerMethodField()
+    is_combo = serializers.BooleanField(read_only=True)
+
+    class Meta:
+        model = Produto
+        fields = ('id', 'titulo', 'descricao_curta', 'imagem', 'is_combo', 'download_url')
+
+    def get_download_url(self, obj):
+        request = self.context['request']
+        if obj.is_combo:
+            return request.build_absolute_uri(
+                reverse('servir_combo_zip', kwargs={'produto_id': obj.id})
+            )
+        
+        else:
+            return request.build_absolute_uri(
+                reverse('servir_arquivo_completo', kwargs={'produto_id': obj.id})
+            )
     
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):

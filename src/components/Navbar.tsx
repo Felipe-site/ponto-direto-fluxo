@@ -1,8 +1,6 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, ShoppingCart, ChevronDown, User, Car } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Menu, X, ShoppingCart, ChevronDown, User } from 'lucide-react';
 import SearchBar from './SearchBar';
 import {
   NavigationMenu,
@@ -26,26 +24,21 @@ const Navbar = () => {
   return (
     <nav className="bg-white shadow-sm fixed w-full z-20 top-0 left-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo e nome */}
+        {/* Container principal com altura aumentada */}
+        <div className="flex items-center justify-between h-20">
+          
+          {/* Bloco da Esquerda: Logo Grande */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center">
-              <div className="h-9 w-auto bg-gabarito rounded-md flex items-center justify-center px-3 text-white font-bold">
-                D<span className="text-xs">No</span>P
-              </div>
-              <span className="ml-2 text-lg font-semibold text-gray-900">Direto no Ponto</span>
+              <img src="/logo+nome.png" alt="Direto No Ponto" className="w-[180px] h-auto" />
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex md:items-center md:space-x-6 flex-1">
+          {/* Bloco da Direita: Itens de Navegação Centralizados (Desktop) */}
+          {/* Este container ocupa o espaço restante (flex-1) e centraliza seu conteúdo (justify-center) */}
+          <div className="hidden md:flex flex-1 items-center justify-center space-x-6">
             <SearchBar />
             
-            <Link to="/area-do-aluno" className="text-gray-600 hover:text-gabarito flex items-center">
-              <User className="h-5 w-5 mr-1" />
-              <span>Área de Alunos</span>
-            </Link>
-
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
@@ -76,6 +69,11 @@ const Navbar = () => {
               </NavigationMenuList>
             </NavigationMenu>
 
+            <Link to="/area-do-aluno" className="text-gray-600 hover:text-gabarito flex items-center">
+              <User className="h-5 w-5 mr-1" />
+              <span>Área de Alunos</span>
+            </Link>
+
             <button onClick={() => setIsDrawerOpen(true)} className='relative'>
               <ShoppingCart className="w-6 h-6" />
               {getQuantity() > 0 && (
@@ -86,21 +84,21 @@ const Navbar = () => {
             </button>
           </div>
 
-          {/* Mobile menu button */}
+          {/* Botão do Menu Mobile */}
           <div className="md:hidden">
             <button
               onClick={toggleMenu}
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gabarito hover:bg-gray-100 focus:outline-none"
-              aria-expanded="false"
             >
               <span className="sr-only">Abrir menu</span>
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
+
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Menu Mobile (código permanece o mesmo) */}
       {isMenuOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white">
@@ -145,6 +143,8 @@ const Navbar = () => {
           </div>
         </div>
       )}
+
+
       <CartDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
     </nav>
   );

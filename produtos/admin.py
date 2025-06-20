@@ -5,25 +5,32 @@ from taggit.models import Tag
 
 class DetalhesProdutoInline(admin.StackedInline):
     model = DetalhesProduto
-    extra = 1
+    can_delete = False
 
 @admin.register(Categoria)
 class CategoriaAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'slug')
+    list_display = ('nome', 'slug', 'destaque_rodape')
+    list_editable = ('destaque_rodape',)
     prepopulated_fields = {'slug': ('nome',)}
     search_fields = ('nome',)
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
-    list_display = ('titulo', 'categoria', 'tipo', 'concurso', 
+    inlines=[DetalhesProdutoInline]
+    list_display = ('titulo', 'display_categorias', 'tipo', 'concurso', 
                     'codigo', 'preco', 'tag', 'destaque', 
-                    'exibir_imagem', 'data_atualizacao')
-    list_filter = ('categoria', 'tipo', 'concurso', 
+                    'exibir_imagem', 'data_atualizacao', 'ativo')
+    list_filter = ('categorias', 'tipo', 'concurso', 
                    'tag', 'destaque', 'data_criacao')
-    search_fields = ('titulo', 'codigo', 'descricao', 'concurso')
+    search_fields = ('titulo', 'codigo', 'descricao', 'concurso', 
+                     'tags__name', 'categorias__nome')
     prepopulated_fields = {'slug': ('titulo',)}
-    inlines = [DetalhesProdutoInline]
-    list_editable = ('destaque', 'tag')
+    list_editable = ('destaque', 'tag', 'tipo')
+    filter_horizontal = ('categorias', 'produtos_inclusos',)
+
+    @admin.display(description='Categorias')
+    def display_categorias(self, obj):
+        return ", ".join([cat.nome for cat in obj.categorias.all()])
     
     def exibir_imagem(self, obj):
         if obj.imagem:
@@ -33,7 +40,7 @@ class ProdutoAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Informações Básicas', {
-            'fields': ('titulo', 'slug', 'categoria', 'concurso', 'tag', 'destaque', 'tags')
+            'fields': ('titulo', 'slug', 'categorias', 'concurso', 'tag', 'destaque', 'tags', 'tipo')
         }),
         ('Descrição', {
             'fields': ('descricao_curta', 'descricao')
@@ -47,8 +54,12 @@ class ProdutoAdmin(admin.ModelAdmin):
         ('Amostra', {
             'fields': ('amostra',)
         }),
+        ('Arquivo do Produto', {
+            'fields': ('arquivo_produto',)
+        }),
         ('Combos', {
-            'fields': ('is_combo', 'produtos_inclusos')
+            'fields': ('is_combo', 'produtos_inclusos'),
+            'classes': ('collapse',)
         }),
     )
 

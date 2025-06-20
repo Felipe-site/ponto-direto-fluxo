@@ -2,16 +2,17 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { useSearch } from '@/context/SearchContext';
 
 const SearchBar = () => {
 
-  const [termo, setTermo] = useState('');
+  const { searchTerm, setSearchTerm } = useSearch();
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if(termo.trim()) {
-      navigate(`/busca?q=${encodeURIComponent(termo.trim())}`)
+    if(searchTerm.trim()) {
+      navigate('/materiais/resumos');
     }
   };
 
@@ -20,8 +21,8 @@ const SearchBar = () => {
       <div className="relative">
         <Input 
           type="text"
-          value={termo}
-          onChange={(e) => setTermo(e.target.value)}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Qual material você está buscando?"
           className="w-full pl-10 pr-4 py-2 text-sm bg-gray-50"
         />

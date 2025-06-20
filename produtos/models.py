@@ -13,6 +13,7 @@ class Categoria(models.Model):
     nome = models.CharField(max_length=100)
     sigla = models.CharField(max_length=10)
     slug = models.SlugField(unique=True, blank=True)
+    destaque_rodape = models.BooleanField(default=False, verbose_name="Destacar no Rodapé?")
     
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -64,11 +65,12 @@ class Produto(models.Model):
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     preco_antigo = models.DecimalField(max_digits=10, decimal_places= 2, null=True, blank=True)
     parcelas = models.IntegerField(default=12)
-    imagem = models.ImageField(upload_to='produtos/', blank=True, null=True)
-    amostra = models.FileField(upload_to="amostras/", null=True, blank=True)
+    imagem = models.ImageField(upload_to='produtos/capas/', blank=True, null=True)
+    amostra = models.FileField(upload_to="produtos/amostras/", null=True, blank=True)
+    arquivo_produto = models.FileField(upload_to='produtos/completos/', null=True, blank=True, verbose_name="Arquivo do Produto Completo")
 
     # Classificação
-    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='produtos')
+    categorias = models.ManyToManyField(Categoria, related_name='produtos', blank=True)
     tipo = models.CharField(max_length=20, choices=TIPOS, default='resumo')
     concurso = models.CharField(max_length=20)
     tag = models.CharField(max_length=20, choices=TAGS_CHOICES, default='Regular')
@@ -78,6 +80,7 @@ class Produto(models.Model):
     produtos_inclusos = models.ManyToManyField("self", blank=True, symmetrical=False, related_name="incluindo_em")
 
     destaque = models.BooleanField(default=False)
+    ativo = models.BooleanField(default=True, verbose_name="Produto Ativo?")
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_atualizacao = models.DateTimeField(auto_now=True)
     
@@ -87,12 +90,17 @@ class Produto(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.titulo)
-        if not self.codigo:
-            self.codigo = gerar_codigo_produto(self.categoria.sigla, self.concurso)
+        
         super().save(*args, **kwargs)
+
+        if not self.codigo and self.categorias.exists():
+            primeira_categoria = self.categorias.first()
+            if primeira_categoria:
+                self.codigo = gerar_codigo_produto(primeira_categoria.sigla, self.concurso)
+                super().save(update_fields=['codigo'])
     
     def __str__(self):
-        return f"{self.titulo} ({self.codigo})"
+        return f"{self.titulo} ({self.codigo or 'Sem código'})"
     
     class Meta:
         verbose_name = 'Produto'

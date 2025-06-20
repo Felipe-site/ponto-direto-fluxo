@@ -1,21 +1,43 @@
-
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Phone, MapPin, Instagram, Twitter, Facebook, Linkedin } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import api from '@/services/api';
+import { useSearch } from '@/context/SearchContext';
+
+interface Categoria {
+  id: number;
+  nome: string;
+  slug: string;
+}
 
 const Footer = () => {
+
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const { setSearchTerm } = useSearch();
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (categoryName) => {
+    setSearchTerm(categoryName);
+    navigate('/materiais/resumos');
+  }
+
+  useEffect(() => {
+    api.get('/categorias/?destaque_rodape=true')
+      .then(response => {
+        setCategorias(response.data.slice(0, 6));
+      })
+      .catch(error => console.error("Erro ao buscar categorias para o footer:", error));
+  }, []);
+
   return (
     <footer className="bg-gray-900 text-white">
       <div className="container px-4 md:px-6 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Logo and description */}
           <div className="space-y-4">
-            <div className="flex items-center">
-              {/* Placeholder for logo */}
-              <div className="h-9 w-auto bg-primary-500 rounded-md flex items-center justify-center px-3 mr-2">
-                D<span className="text-xs">No</span>P
-              </div>
-              <span className="font-bold text-lg">Direto No Ponto</span>
-            </div>
+            <Link to="/">
+              <img src="/logo+nome.png" alt="Direto No Ponto" className="w-48 h-auto" />
+            </Link>
             <p className="text-gray-400 text-sm">
               Resumos e materiais de estudo direto ao ponto para otimizar seu aprendizado 
               e conquistar seus objetivos acadêmicos.
@@ -40,13 +62,10 @@ const Footer = () => {
           <div>
             <h3 className="font-bold text-lg mb-4">Links Rápidos</h3>
             <ul className="space-y-2">
-              {['Home', 'Conteúdos', 'Materiais', 'Blog', 'Sobre', 'Contato'].map((item) => (
-                <li key={item}>
-                  <Link to="#" className="text-gray-400 hover:text-white transition-colors">
-                    {item}
-                  </Link>
-                </li>
-              ))}
+              <li><Link to="/" className="text-gray-400 hover:text-white transition-colors">Home</Link></li>
+              <li><Link to="/materiais/resumos" className="text-gray-400 hover:text-white transition-colors">Resumos</Link></li>
+              <li><Link to="/materiais/combos" className="text-gray-400 hover:text-white transition-colors">Combos</Link></li>
+              <li><Link to="/area-do-aluno" className="text-gray-400 hover:text-white transition-colors">Área do Aluno</Link></li>
             </ul>
           </div>
 
@@ -54,11 +73,14 @@ const Footer = () => {
           <div>
             <h3 className="font-bold text-lg mb-4">Categorias</h3>
             <ul className="space-y-2">
-              {['Português', 'Direito Administrativo', 'Direito Constitucional', 'Direito do Trabalho', 'Direito Civil', 'Informática', 'Raciocínio Lógico'].map((item) => (
-                <li key={item}>
-                  <Link to="#" className="text-gray-400 hover:text-white transition-colors">
-                    {item}
-                  </Link>
+              {categorias.map((cat) => (
+                <li key={cat.id}>
+                  <button
+                    onClick={() => handleCategoryClick(cat.nome)}
+                    className="text-gray-400 hover:text-white transition-colors text-left w-full"
+                  >
+                    {cat.nome}
+                  </button>
                 </li>
               ))}
             </ul>

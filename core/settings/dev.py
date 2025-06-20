@@ -3,6 +3,7 @@ from .base import *
 DEBUG = True
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'Direto no Ponto <contato@diretonoponto.com.br>'
 
 DATABASES = {
     'default': {

@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { Produto } from "@/types/produto";
+import api from "@/services/api"; // Importamos o 'api' para fazer a chamada
 
 interface CartItem extends Produto {
   quantidade: number;
@@ -14,17 +15,56 @@ interface CartContextType {
   incrementar: (id: number) => void;
   decrementar: (id: number) => void;
 
+  // O estado do cupom e os totais continuam aqui
   cupom: any;
-  setCupom: (cupom: any) => void;
   subtotal: number;
   valorDesconto: number;
   totalFinal: number;
+
+  // Expondo a nova função para aplicar o cupom
+  aplicarCupom: (codigo: string) => Promise<any>;
+  removerCupom: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(() => {
+    const savedCart = localStorage.getItem("diretoNoPontoCartItems");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  const [cupom, setCupom] = useState<any>(() => {
+    const savedCupom = localStorage.getItem("diretoNoPontoCartCupom");
+    return savedCupom ? JSON.parse(savedCupom) : null;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("diretoNoPontoCartItems", JSON.stringify(items));
+  }, [items]);
+
+  useEffect(() => {
+    if (cupom) {
+      localStorage.setItem("diretoNoPontoCartCupom", JSON.stringify(cupom));
+    } else {
+      localStorage.removeItem("diretoNoPontoCartCupom");
+    }
+  }, [cupom]);
+
+  const aplicarCupom = async (codigo: string) => {
+    const res = await api.post("/verificar-cupom/", {
+      codigo: codigo,
+      total: subtotal,
+    });
+    
+    if (res.data.valido) {
+      setCupom(res.data); 
+      return res.data;
+    } else {
+      setCupom(null); 
+      throw new Error(res.data.erro || "Cupom inválido ou não aplicável.");
+    }
+  };
 
   const addToCart = (produto: Produto) => {
     setItems((prev) => {
@@ -63,18 +103,22 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const clearCart = () => setItems([]);
+  const clearCart = () => {
+    setItems([]);
+    setCupom(null); 
+  };
+
+  const removerCupom = () => {
+    setCupom(null);
+  };
 
   const getQuantity = () =>
     items.reduce((acc, item) => acc + item.quantidade, 0);
 
-  const [cupom, setCupom] = useState<any>(null);
 
-  const subtotal = items.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
-
+  const subtotal = items.reduce((acc, item) => acc + Number(item.preco) * item.quantidade, 0);
   const valorDesconto = cupom?.desconto || 0;
-
-  const totalFinal = subtotal - valorDesconto;
+  const totalFinal = subtotal > valorDesconto ? subtotal - valorDesconto : 0;
 
   return (
     <CartContext.Provider
@@ -87,10 +131,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         incrementar,
         decrementar,
         cupom,
-        setCupom,
         subtotal,
         valorDesconto,
         totalFinal,
+        aplicarCupom,
+        removerCupom,
       }}
     >
       {children}

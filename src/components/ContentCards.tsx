@@ -108,7 +108,7 @@ const ContentCards = () => {
     <section className="py-12 bg-gray-50">
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center text-center space-y-4 mb-8 md:mb-12">
-          <div className="inline-flex items-center justify-center px-2 py-1 rounded-full bg-primary-100 text-primary-800 text-sm font-medium mb-3">
+          <div className="inline-flex items-center justify-center px-2 py-1 rounded-full bg-primary-100 text-green-800 text-sm font-medium mb-3">
             <BookOpen className="h-4 w-4 mr-1" />
             Materiais
           </div>
@@ -131,7 +131,7 @@ const ContentCards = () => {
         <div className="flex justify-center mt-10">
           <Link 
             to="/materiais/resumos" 
-            className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium"
+            className="inline-flex items-center text-green-700 hover:text-green-700 font-medium"
           >
             Ver todos os materiais
             <ArrowRight className="ml-2 h-4 w-4" />

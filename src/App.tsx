@@ -18,6 +18,12 @@ import Checkout from "./pages/Checkout";
 import CadastroConcluido from "./pages/CadastroConcluido";
 import AtivarConta from "./pages/AtivarConta";
 import Busca from "./pages/Busca";
+import AuthCallback from "./pages/AuthCallback";
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import EsqueciSenha from "./pages/EsqueciSenha";
+import RedefinirSenha from "./pages/RedefinirSenha";
+import { SearchProvider } from "./context/SearchContext";
+import Combos from "./pages/Combos";
 
 const queryClient = new QueryClient();
 
@@ -26,44 +32,63 @@ const PrivateRoute = ({ children }: { children: JSX.Element }) => {
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
-const App = () => (
-  <AuthProvider>
-    <QueryClientProvider client={queryClient}>
-      <CartProvider>  
-        <TooltipProvider>
-          <Toaster />
-          <Sonner 
-            position="bottom-right"
-            duration={1200}
-            closeButton
-          />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/busca" element={<Busca />} />
-              <Route path="/materiais/resumos" element={<Resumos />} />
-              <Route path="/produtos/:slug" element={<ProdutoDetalhe />} />
-              <Route path="/cadastro-concluido" element={<CadastroConcluido />} />
-              <Route path="/ativar-conta" element={<AtivarConta />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/carrinho" element={<Carrinho />}/>
-              <Route path="/checkout" element={<Checkout />}/>
-              <Route 
-                path="/area-do-aluno"
-                element={
-                  <PrivateRoute>
-                    <AreaDoAluno />
-                  </PrivateRoute>
-                }
-              />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </CartProvider>
-    </QueryClientProvider>
-</AuthProvider>
-);
+const App = () => {
+
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+  if(!googleClientId) {
+    console.error("VITE_GOOGLE_cLIENT_ID não encontrada no arquivo .env");
+    return <div>Erro de configuração: Chave do Google não encontrada.</div>;
+  }
+
+  return (
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <AuthProvider>
+        <QueryClientProvider client={queryClient}>
+          <SearchProvider>
+            <CartProvider>  
+              <TooltipProvider>
+                <Toaster />
+                <Sonner 
+                  position="bottom-right"
+                  duration={1200}
+                  closeButton
+                />
+                <BrowserRouter>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/busca" element={<Busca />} />
+                    <Route path="/materiais" element={<Resumos />} />
+                    <Route path="/materiais/resumos" element={<Resumos />} />
+                    <Route path="/materiais/combos" element={<Combos />} />
+                    <Route path="/produtos/:slug" element={<ProdutoDetalhe />} />
+                    <Route path="/cadastro-concluido" element={<CadastroConcluido />} />
+                    <Route path="/ativar-conta" element={<AtivarConta />} />
+                    <Route path="/auth/callback" element={<AuthCallback />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/esqueci-minha-senha" element={<EsqueciSenha />} />
+                    <Route path="/redefinir-senha/:uid/:token" element={<RedefinirSenha />} />
+                    <Route path="/carrinho" element={<Carrinho />}/>
+                    <Route path="/checkout" element={<Checkout />}/>
+                    <Route 
+                      path="/area-do-aluno"
+                      element={
+                        <PrivateRoute>
+                          <AreaDoAluno />
+                        </PrivateRoute>
+                      }
+                    />
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </BrowserRouter>
+              </TooltipProvider>
+            </CartProvider>
+          </SearchProvider>
+        </QueryClientProvider>
+    </AuthProvider>
+  </GoogleOAuthProvider>
+  );
+};
 
 export default App;

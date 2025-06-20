@@ -4,22 +4,22 @@ import { CheckCircle2, Clock, BookOpen, Lightbulb, Sparkles } from 'lucide-react
 const Features = () => {
   const features = [
     {
-      icon: <Lightbulb className="h-10 w-10 text-primary-500" />,
+      icon: <Lightbulb className="h-10 w-10 text-green-700" />,
       title: 'Conteúdo Direto ao Ponto',
       description: 'Materiais objetivos que vão direto à essência do que você precisa aprender, sem rodeios.'
     },
     {
-      icon: <Clock className="h-10 w-10 text-primary-500" />,
+      icon: <Clock className="h-10 w-10 text-green-700" />,
       title: 'Economia de Tempo',
       description: 'Otimize seu tempo de estudo com resumos concisos e esquemas visuais de fácil assimilação.'
     },
     {
-      icon: <BookOpen className="h-10 w-10 text-primary-500" />,
+      icon: <BookOpen className="h-10 w-10 text-green-700" />,
       title: 'Diversidade de Materiais',
       description: 'Acesse resumos, mapas mentais, flashcards e esquemas para diferentes formas de aprendizado.'
     },
     {
-      icon: <Sparkles className="h-10 w-10 text-primary-500" />,
+      icon: <Sparkles className="h-10 w-10 text-green-700" />,
       title: 'Preparado por Especialistas',
       description: 'Conteúdo desenvolvido por professores e especialistas com experiência nas respectivas áreas.'
     },

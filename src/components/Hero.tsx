@@ -19,9 +19,11 @@ const Hero = () => {
               Explorar Materiais
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
+            {/*
             <Button variant="outline" className="h-11 px-8 text-base">
               Conhecer Mais
             </Button>
+            */}
           </div>
           {/*
           <div className="w-full max-w-5xl mt-8 md:mt-16 bg-gradient-to-b from-white to-gray-100 rounded-lg shadow-xl p-4 md:p-8 flex flex-col md:flex-row gap-8 items-center">

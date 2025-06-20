@@ -17,6 +17,8 @@ class Pedido(models.Model):
         ('pendente', 'Pendente'),
         ('pago', 'Pago'),
         ('cancelado', 'Cancelado'),
+        ('falhou', 'Falhou'),
+        ('reembolso', 'Reembolso'),
     ]
 
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -27,6 +29,7 @@ class Pedido(models.Model):
     cupom = models.ForeignKey(Cupom, on_delete=models.SET_NULL, null=True, blank=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pendente')
     criado_em = models.DateTimeField(auto_now_add=True)
+    codigo = models.CharField(max_length=100, unique=True, blank=True, null=True)
 
     def __str__(self):
         return f"Pedido #{self.id} - {self.usuario.username} - R$ {self.total:.2f}"

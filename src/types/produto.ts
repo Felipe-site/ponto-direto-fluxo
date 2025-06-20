@@ -13,6 +13,7 @@ export interface Produto {
   descricao: string;
   preco: number;
   preco_antigo?: number;
+  amostra_url?: string | null;
   detalhes?: {
     conteudo?: string;
     materiais_inclusos?: string;

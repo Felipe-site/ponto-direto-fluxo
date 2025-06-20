@@ -5,10 +5,13 @@ import ReCAPTCHA from "react-google-recaptcha";
 import api from "@/services/api";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useGoogleLogin } from "@react-oauth/google";
+import { Link } from 'react-router-dom';
 
 const Login = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
+    const { loginWithTokens } = useAuth();
 
     const recaptchaRef = useRef<ReCAPTCHA>(null);
     const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
@@ -79,16 +82,38 @@ const Login = () => {
 
       try {
         await api.post("/register/", {
-          username: registerData.email.split("@")[0],
+          username: registerData.email,
           email: registerData.email,
           password: registerData.password,
           recaptcha_token: recaptchaToken,
         });
         navigate("/cadastro-concluido");
-      } catch {
-        alert("Erro ao cadastrar.");
+      } catch (error: any){
+        const errorData = error.response?.data;
+        const firstErrorKey = Object.keys(errorData)[0];
+        const errorMessage = errorData[firstErrorKey]?.[0] || "Erro ao cadastrar.";
+        alert(errorMessage);
+        console.error("Erro no cadastro", errorData);
       }
     };
+    
+    const handleGoogleLogin = useGoogleLogin({
+      onSuccess: async (tokenResponse) => {
+        try {
+          const response = await api.post('/auth/google/', {
+            access_token: tokenResponse.access_token,
+          });
+
+          const { access_token, refresh_token } = response.data;
+          loginWithTokens(access_token, refresh_token);
+          navigate('/area-do-aluno');
+        } catch (error) {
+          console.error("Falha no login com Google:", error);
+          alert("Ocorreu um erro ao tentar fazer login com o Google.");
+        }
+      },
+    });
+    
     return (
       <>
         <Navbar />
@@ -144,9 +169,9 @@ const Login = () => {
                     />
                     Lembre-me
                     </label>
-                    <a href="#" className="text-sm text-red-600 hover:underline">
+                    <Link to="/esqueci-minha-senha" className="text-sm text-red-600 hover:underline">
                     Perdeu sua senha?
-                    </a>
+                    </Link>
                 </div>
                 <ReCAPTCHA 
                   sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
@@ -159,6 +184,27 @@ const Login = () => {
                     Acessar
                 </button>
                 </form>
+
+                <div className="mt-6">
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                      <span className="px-2 bg-gray-100 text-gray-500">ou</span>
+                    </div>
+                  </div>
+
+                  <div className="mt-6">
+                    <button
+                      onClick={() => handleGoogleLogin()}
+                      className="w-full flex items-center justify-center gap-3 py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    >
+                      <svg viewBox="0 0 48 48" className="w-5 h-5"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.71C9.9 27.22 9.5 25.65 9.5 24s.4-3.22 1.03-4.71l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.97-6.07z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path><path fill="none" d="M0 0h48v48H0z"></path></svg>
+                      <span>Entrar com Google</span>
+                    </button>
+                  </div>
+                </div>
             </div>
     
             {/* Cadastro */}
@@ -219,7 +265,26 @@ const Login = () => {
                     Cadastre-se
                 </button>
                 </form>
-            </div>
+                  <div className="mt-6">
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-gray-300"></div>
+                      </div>
+                      <div className="relative flex justify-center text-sm">
+                        <span className="px-2 bg-gray-100 text-gray-500">ou</span>
+                      </div>
+                    </div>
+                    <div className="mt-6">
+                      <button
+                        onClick={() => handleGoogleLogin()}
+                        className="w-full flex items-center justify-center gap-3 py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                      >
+                        <svg viewBox="0 0 48 48" className="w-5 h-5"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.71C9.9 27.22 9.5 25.65 9.5 24s.4-3.22 1.03-4.71l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.97-6.07z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path><path fill="none" d="M0 0h48v48H0z"></path></svg>
+                        <span>Cadastre-se com Google</span>
+                      </button>
+                    </div>
+                  </div>
+              </div>
             </div>
         </div>
 
