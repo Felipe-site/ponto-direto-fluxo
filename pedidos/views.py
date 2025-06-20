@@ -15,10 +15,8 @@ import traceback
 from .emails import enviar_email_falha_pagamento, enviar_email_pedido_pago
 from decimal import Decimal
 
-# Em pedidos/views.py
 from decimal import Decimal
 import traceback
-# ... outros imports que você já tem
 
 @api_view(["POST", "OPTIONS"])
 @permission_classes([IsAuthenticated])
@@ -32,19 +30,14 @@ def checkout_link(request):
         desconto = Decimal(data.get('desconto', '0.00'))
         total = Decimal(data.get('total', '0.00'))
         
-        # --- DEBUG PASSO 1 ---
         cupom_id = data.get("cupom")
-        print(f"--- DEBUG 1: ID do cupom recebido do frontend: {cupom_id} (Tipo: {type(cupom_id)}) ---")
 
         cupom_obj = None
         if cupom_id:
             try:
                 cupom_obj = Cupom.objects.get(id=cupom_id)
-                # --- DEBUG PASSO 2 ---
-                print(f"--- DEBUG 2: Objeto Cupom encontrado no banco: {cupom_obj.codigo} ---")
             except Cupom.DoesNotExist:
                 print(f"--- DEBUG ERRO: Cupom com ID {cupom_id} NÃO foi encontrado no banco! ---")
-                # Se não encontrar, continua sem cupom, mas o log nos avisa.
         
         itens = []
         if not itens_data:
@@ -63,13 +56,10 @@ def checkout_link(request):
             subtotal=subtotal,
             desconto=desconto,
             total=total,
-            cupom=cupom_obj, # Associa o objeto cupom encontrado
+            cupom=cupom_obj, 
             status="pendente"
         )
         pedido.itens.set(itens)
-
-        # --- DEBUG PASSO 3 ---
-        print(f"--- DEBUG 3: Cupom associado ao Pedido #{pedido.id} antes de chamar o Pagar.me: {pedido.cupom} ---")
 
         response_pagarme = criar_link_pagamento(pedido, user)
 

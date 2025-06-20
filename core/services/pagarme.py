@@ -20,7 +20,6 @@ def criar_link_pagamento(pedido, usuario):
     itens = []
 
     if pedido.cupom and pedido.cupom.tipo == 'percentual':
-        print("Aplicando cupom de PORCENTAGEM em cada item.")
         percentual_desconto = Decimal(pedido.cupom.valor) / 100
         for item in pedido.itens.all():
             preco_original_total_item = Decimal(item.produto.preco) * item.quantidade
@@ -33,7 +32,6 @@ def criar_link_pagamento(pedido, usuario):
             })
 
     elif pedido.cupom and pedido.cupom.tipo == 'fixo':
-        print("Aplicando cupom de VALOR FIXO distribuído entre os itens.")
         desconto_restante = Decimal(pedido.desconto)
         for item in pedido.itens.all():
             preco_item_original = Decimal(item.produto.preco) * item.quantidade
@@ -49,7 +47,6 @@ def criar_link_pagamento(pedido, usuario):
             desconto_restante -= desconto_neste_item
     
     else: 
-        print("Nenhum cupom aplicado. Enviando preços cheios.")
         for item in pedido.itens.all():
             itens.append({
                 "name": item.produto.titulo,
@@ -62,7 +59,6 @@ def criar_link_pagamento(pedido, usuario):
 
     soma_itens_calculada = sum(item['amount'] for item in itens)
     if soma_itens_calculada != total_in_cents:
-        print(f"Alerta de arredondamento: Soma dos itens ({soma_itens_calculada}) != Total do pedido ({total_in_cents}). Usando a soma dos itens.")
         total_in_cents = soma_itens_calculada
     
     max_installments = 8
@@ -74,7 +70,6 @@ def criar_link_pagamento(pedido, usuario):
         for i in range(1, max_installments + 1)
     ]
 
-    # --- BODY COM TODAS AS REGRAS DE NEGÓCIO PREENCHIDAS ---
     body = {
         "type": "order",
         "name": f"Pedido #{pedido.id}",
@@ -120,14 +115,14 @@ def criar_link_pagamento(pedido, usuario):
             }
         }
     }
-
+    """
     print("✅ Iniciando criação do link Pagar.me (Endpoint 'sdx-api')...")
     print(f"🔗 URL: {url}")
     print(f"📦 Body: {body}")
-
+    """
     response = requests.post(url, headers=headers, json=body)
-    print("📩 Status Code:", response.status_code)
-    print("📩 Response Text:", response.text)
+   # print("📩 Status Code:", response.status_code)
+   # print("📩 Response Text:", response.text)
     response_data = response.json()
 
     if response.ok:
@@ -136,9 +131,9 @@ def criar_link_pagamento(pedido, usuario):
 
         if not checkout_url or not codigo:
             raise Exception("Erro: resposta do Pagar.me não contém 'url' ou 'code'.")
-        print(f"🎉 SUCESSO! LINK GERADO! URL DO CHECKOUT: {checkout_url}")
-        print(f"Código do link: {codigo}")
-        print(f"Body: {body}")
+       # print(f"🎉 SUCESSO! LINK GERADO! URL DO CHECKOUT: {checkout_url}")
+       # print(f"Código do link: {codigo}")
+       # print(f"Body: {body}")
 
         return {
             "url": checkout_url,
@@ -146,7 +141,7 @@ def criar_link_pagamento(pedido, usuario):
         }
     
     else:
-        print("❌ ERRO NA CRIAÇÃO DO LINK PAGAR.ME:")
-        print(f"STATUS CODE: {response.status_code}")
-        print(f"RESPOSTA DO SERVIDOR: {response.text}")
+       # print("❌ ERRO NA CRIAÇÃO DO LINK PAGAR.ME:")
+       # print(f"STATUS CODE: {response.status_code}")
+       # print(f"RESPOSTA DO SERVIDOR: {response.text}")
         raise Exception(f"Erro ao criar link: {response.status_code} - {response.text}")
