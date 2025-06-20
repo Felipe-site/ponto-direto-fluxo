@@ -13,6 +13,12 @@ from rest_framework.views import APIView
 from api.serializers import PedidoSerializer, ProdutoMaterialSerializer
 import traceback
 from .emails import enviar_email_falha_pagamento, enviar_email_pedido_pago
+from decimal import Decimal
+
+# Em pedidos/views.py
+from decimal import Decimal
+import traceback
+# ... outros imports que você já tem
 
 @api_view(["POST", "OPTIONS"])
 @permission_classes([IsAuthenticated])
@@ -22,62 +28,64 @@ def checkout_link(request):
 
     try:
         itens_data = data.get("itens", [])
+        subtotal = Decimal(data.get('subtotal', '0.00'))
+        desconto = Decimal(data.get('desconto', '0.00'))
+        total = Decimal(data.get('total', '0.00'))
+        
+        # --- DEBUG PASSO 1 ---
         cupom_id = data.get("cupom")
+        print(f"--- DEBUG 1: ID do cupom recebido do frontend: {cupom_id} (Tipo: {type(cupom_id)}) ---")
 
-        itens = []
-        subtotal = 0
-
-        for item in itens_data:
-            produto = Produto.objects.get(id=item["produto"])
-            quantidade = item["quantidade"]
-            item_pedido = ItemPedido.objects.create(
-                produto=produto,
-                quantidade=quantidade
-            )
-            itens.append(item_pedido)
-            subtotal += float(produto.preco) * quantidade
-
-        desconto = 0
-        cupom = None
-
+        cupom_obj = None
         if cupom_id:
             try:
-                cupom = Cupom.objects.get(id=cupom_id)
-                desconto = float(cupom.valor)
+                cupom_obj = Cupom.objects.get(id=cupom_id)
+                # --- DEBUG PASSO 2 ---
+                print(f"--- DEBUG 2: Objeto Cupom encontrado no banco: {cupom_obj.codigo} ---")
             except Cupom.DoesNotExist:
-                pass
+                print(f"--- DEBUG ERRO: Cupom com ID {cupom_id} NÃO foi encontrado no banco! ---")
+                # Se não encontrar, continua sem cupom, mas o log nos avisa.
         
-        total = subtotal - desconto
-        if total < 0:
-            total = 0
-
+        itens = []
+        if not itens_data:
+            return Response({"erro": "O carrinho não pode estar vazio."}, status=status.HTTP_400_BAD_REQUEST)
+            
+        for item_data in itens_data:
+            produto = Produto.objects.get(id=item_data["produto"])
+            item_pedido = ItemPedido.objects.create(
+                produto=produto,
+                quantidade=item_data["quantidade"]
+            )
+            itens.append(item_pedido)
+        
         pedido = Pedido.objects.create(
             usuario=user,
             subtotal=subtotal,
             desconto=desconto,
             total=total,
-            cupom=cupom,
+            cupom=cupom_obj, # Associa o objeto cupom encontrado
             status="pendente"
         )
         pedido.itens.set(itens)
 
-        response = criar_link_pagamento(pedido, user)
+        # --- DEBUG PASSO 3 ---
+        print(f"--- DEBUG 3: Cupom associado ao Pedido #{pedido.id} antes de chamar o Pagar.me: {pedido.cupom} ---")
 
-        url_pagamento = response.get("url")
-        codigo_pagamento = response.get("code")
+        response_pagarme = criar_link_pagamento(pedido, user)
 
-        if not url_pagamento or not codigo_pagamento:
-            return Response({"erro": "Erro ao gerar link de pagamento"}, status=500)
+        url_pagamento = response_pagarme.get("url")
+        codigo_pagamento = response_pagarme.get("code")
+
+        if not url_pagamento:
+            return Response({"erro": "Erro ao gerar URL de pagamento"}, status=500)
 
         pedido.codigo = codigo_pagamento
         pedido.save()
 
-        return Response({
-            "url": url_pagamento,
-            "pedido_id": pedido.id
-            }, status=200)
+        return Response({ "url": url_pagamento, "pedido_id": pedido.id }, status=200)
     
     except Exception as e:
+        traceback.print_exc()
         return Response({"erro": str(e)}, status=500)
     
 @csrf_exempt

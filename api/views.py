@@ -191,6 +191,7 @@ def verificar_cupom(request):
 
         return Response({
             "valido": True,
+            "id": cupom.id,
             "codigo": cupom.codigo,
             "tipo": cupom.tipo,
             "valor": float(cupom.valor),
