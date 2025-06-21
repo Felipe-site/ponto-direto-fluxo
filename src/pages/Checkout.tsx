@@ -1,9 +1,9 @@
-import { useCart } from "@/context/CartContext";
+import { useCart } from "@/context/CartContext.tsx";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import api from "@/services/api";
+import Navbar from "@/components/Navbar.tsx";
+import Footer from "@/components/Footer.tsx";
+import api from "@/services/api.ts";
 import { stat } from "fs";
 
 const Spinner = () => (

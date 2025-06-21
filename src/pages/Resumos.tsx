@@ -1,17 +1,17 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar.tsx";
+import Footer from "@/components/Footer.tsx";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Eye } from 'lucide-react';
 import { toast } from "sonner";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import api from "@/services/api";
-import { Produto } from "@/types/produto";
-import { useCart } from '@/context/CartContext';
-import { useSearch } from '@/context/SearchContext';
+import api from "@/services/api.ts";
+import { Produto } from "@/types/produto.ts";
+import { useCart } from '@/context/CartContext.tsx';
+import { useSearch } from '@/context/SearchContext.tsx';
 import { ProdutoCard } from '@/components/produtos/ProdutoCard.tsx';
 const Resumos = () => {
 

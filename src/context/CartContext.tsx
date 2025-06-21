@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { Produto } from "@/types/produto";
-import api from "@/services/api"; // Importamos o 'api' para fazer a chamada
+import { Produto } from "@/types/produto.ts";
+import api from "@/services/api.ts"; // Importamos o 'api' para fazer a chamada
 
 interface CartItem extends Produto {
   quantidade: number;

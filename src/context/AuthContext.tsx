@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import api from "@/services/api";
+import api from "@/services/api.ts";
 import React from "react";
-import { isAuthenticated } from "@/utils/auth";
+import { isAuthenticated } from "@/utils/auth.ts";
 
 interface AuthContextType {
     token: string | null;

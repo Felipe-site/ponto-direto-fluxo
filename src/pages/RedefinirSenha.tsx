@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import api from '@/services/api';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import api from '@/services/api.ts';
+import Navbar from '@/components/Navbar.tsx';
+import Footer from '@/components/Footer.tsx';
 
 export default function RedefinirSenha() {
   // Pega os parâmetros 'uid' e 'token' da URL

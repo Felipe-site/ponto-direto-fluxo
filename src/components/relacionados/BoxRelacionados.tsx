@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ProdutoRelacionadoCard } from "./ProdutoRelacionadoCard";
+import { ProdutoRelacionadoCard } from "./ProdutoRelacionadoCard.tsx";
 import { Button } from "../ui/button";
 
 interface Produto {

@@ -1,15 +1,15 @@
 
 import { useParams, useNavigate } from "react-router-dom";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar.tsx";
+import Footer from "@/components/Footer.tsx";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Check, ShoppingCart, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
-import api from "@/services/api";
-import { ProdutoDetalhado } from "@/types/produto";
-import { useCart } from "@/context/CartContext";
+import api from "@/services/api.ts";
+import { ProdutoDetalhado } from "@/types/produto.ts";
+import { useCart } from "@/context/CartContext.tsx";
 import { useRef } from "react";
 
 const ProdutoDetalhe = () => {

@@ -1,9 +1,9 @@
 import { useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import api from '@/services/api';
-import { ProdutoCard } from '@/components/produtos/ProdutoCard';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import api from '@/services/api.ts';
+import { ProdutoCard } from '@/components/produtos/ProdutoCard.tsx';
+import Navbar from '@/components/Navbar.tsx';
+import Footer from '@/components/Footer.tsx';
 
 function useQueryParams() {
   return new URLSearchParams(useLocation().search);

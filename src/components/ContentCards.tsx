@@ -2,10 +2,10 @@
 import { ArrowRight, BookOpen, Clock, MessageSquare } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import api from "@/services/api";
-import { Produto } from "@/types/produto";
-import { ProdutoCard } from "./produtos/ProdutoCard";
-import { useCart } from "@/context/CartContext";
+import api from "@/services/api.ts";
+import { Produto } from "@/types/produto.ts";
+import { ProdutoCard } from "./produtos/ProdutoCard.tsx";
+import { useCart } from "@/context/CartContext.tsx";
 import { toast } from "sonner";
 
 interface ContentCardProps {

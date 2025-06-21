@@ -1,13 +1,11 @@
-// Em src/pages/Combos.tsx
-
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import { useSearch } from '@/context/SearchContext';
-import { Produto } from "@/types/produto";
-import api from "@/services/api";
+import { useSearch } from '@/context/SearchContext.tsx';
+import { Produto } from "@/types/produto.ts";
+import api from "@/services/api.ts";
 
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { ProdutoCard } from "@/components/produtos/ProdutoCard";
+import Navbar from "@/components/Navbar.tsx";
+import Footer from "@/components/Footer.tsx";
+import { ProdutoCard } from "@/components/produtos/ProdutoCard.tsx";
 
 // 1. MUDE O NOME DO COMPONENTE
 const Combos = () => {

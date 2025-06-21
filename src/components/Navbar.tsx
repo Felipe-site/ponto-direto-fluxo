@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, ShoppingCart, ChevronDown, User } from 'lucide-react';
-import SearchBar from './SearchBar';
+import SearchBar from './SearchBar.tsx';
 import {
   NavigationMenu,
   NavigationMenuContent,

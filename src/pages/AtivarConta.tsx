@@ -1,8 +1,8 @@
 import { useLocation } from "react-router-dom";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar.tsx";
+import Footer from "@/components/Footer.tsx";
 import { useState } from "react";
-import api from "@/services/api";
+import api from "@/services/api.ts";
 
 const AtivarConta = () => {
   const location = useLocation();

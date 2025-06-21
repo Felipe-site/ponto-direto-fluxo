@@ -1,10 +1,10 @@
 import { act, useEffect, useState } from "react";
-import { useAuth } from "@/context/AuthContext";
-import api from "@/services/api";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import DetalhesDaContaForm from "@/components/DetalhesDaContaForm";
-import AlterarSenhaForm from "@/components/AlterarSenhaForm";
+import { useAuth } from "@/context/AuthContext.tsx";
+import api from "@/services/api.ts";
+import Navbar from "@/components/Navbar.tsx";
+import Footer from "@/components/Footer.tsx";
+import DetalhesDaContaForm from "@/components/DetalhesDaContaForm.tsx";
+import AlterarSenhaForm from "@/components/AlterarSenhaForm.tsx";
 
 interface Material {
   id: number;

@@ -1,8 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Phone, MapPin, Instagram, Twitter, Facebook, Linkedin } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import api from '@/services/api';
-import { useSearch } from '@/context/SearchContext';
+import api from '@/services/api.ts';
+import { useSearch } from '@/context/SearchContext.tsx';
 
 interface Categoria {
   id: number;

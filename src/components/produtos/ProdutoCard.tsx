@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { ShoppingCart, Eye } from "lucide-react";
-import { Produto } from "@/types/produto";
-import { useCart } from "@/context/CartContext";
+import { Produto } from "@/types/produto.ts";
+import { useCart } from "@/context/CartContext.tsx";
 import { toast } from "sonner";
 
 interface ProdutoCardProps {

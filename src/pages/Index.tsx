@@ -1,10 +1,10 @@
 
-import Navbar from "@/components/Navbar";
-import Hero from "@/components/Hero";
-import ContentCards from "@/components/ContentCards";
-import Features from "@/components/Features";
-import AprovadosCarrossel from "@/components/AprovadosCarrossel";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar.tsx";
+import Hero from "@/components/Hero.tsx";
+import ContentCards from "@/components/ContentCards.tsx";
+import Features from "@/components/Features.tsx";
+import AprovadosCarrossel from "@/components/AprovadosCarrossel.tsx";
+import Footer from "@/components/Footer.tsx";
 
 const Index = () => {
   return (

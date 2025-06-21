@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { useSearch } from '@/context/SearchContext';
+import { useSearch } from '@/context/SearchContext.tsx';
 
 const SearchBar = () => {
 

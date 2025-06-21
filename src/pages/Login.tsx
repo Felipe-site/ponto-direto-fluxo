@@ -1,10 +1,10 @@
 import { useRef, useState } from "react";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthContext.tsx";
 import { useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
-import api from "@/services/api";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import api from "@/services/api.ts";
+import Navbar from "@/components/Navbar.tsx";
+import Footer from "@/components/Footer.tsx";
 import { useGoogleLogin } from "@react-oauth/google";
 import { Link } from 'react-router-dom';
 

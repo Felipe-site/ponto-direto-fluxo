@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/context/AuthContext.tsx';
 
 const LoadingSpinner = () => (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">

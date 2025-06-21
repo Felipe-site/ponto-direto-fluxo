@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import api from '@/services/api';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import api from '@/services/api.ts';
+import Navbar from '@/components/Navbar.tsx';
+import Footer from '@/components/Footer.tsx';
 
 export default function EsqueciSenha() {
     const [email, setEmail] = useState('');
