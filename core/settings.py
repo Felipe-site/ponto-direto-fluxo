@@ -66,6 +66,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'produtos.middleware.AllowPDFIframeMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 # Atualizado para incluir a porta 8080 do frontend
