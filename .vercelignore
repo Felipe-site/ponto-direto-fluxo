@@ -13,7 +13,6 @@ staticfiles/
 api/
 core/
 pedidos/
-produtos/
 accounts/
 aprovados/
 
