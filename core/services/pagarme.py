@@ -7,9 +7,9 @@ from decouple import config
 from decimal import Decimal
 
 def criar_link_pagamento(pedido, usuario):
-    url = config('PAGARME_API_URL_TEST')
+    url = config('PAGARME_API_URL')
     
-    api_key = settings.PAGARME_API_KEY_TEST
+    api_key = settings.PAGARME_API_KEY
     encoded_api_key = base64.b64encode(f"{api_key}:".encode()).decode()
     
     headers = {
