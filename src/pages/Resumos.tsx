@@ -12,8 +12,7 @@ import api from "@/services/api";
 import { Produto } from "@/types/produto";
 import { useCart } from '@/context/CartContext';
 import { useSearch } from '@/context/SearchContext';
-import { ProdutoCard } from '@/components/produtos/ProdutoCard';
-
+import { ProdutoCard } from '@/components/produtos/ProdutoCard.tsx';
 const Resumos = () => {
 
   const { addToCart } = useCart();
