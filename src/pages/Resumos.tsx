@@ -12,7 +12,7 @@ import api from "@/services/api.ts";
 import { Produto } from "@/types/produto.ts";
 import { useCart } from '@/context/CartContext.tsx';
 import { useSearch } from '@/context/SearchContext.tsx';
-import { ProdutoCard } from '@/components/produtos/ProdutoCard.tsx';
+import { ProdutoCard } from '../components/produtos/ProdutoCard.tsx';
 const Resumos = () => {
 
   const { addToCart } = useCart();
