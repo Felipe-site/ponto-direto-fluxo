@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'dj_rest_auth.registration',
     'corsheaders',
     'taggit',
+    'core',
     'api',
     'produtos',
     'pedidos',
@@ -78,7 +79,7 @@ if RENDER_EXTERNAL_HOSTNAME:
     CSRF_TRUSTED_ORIGINS.append(f"https://{RENDER_EXTERNAL_HOSTNAME}")
 else:
     CSRF_TRUSTED_ORIGINS.append(f"http://localhost:8080")
-    
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 CORS_ALLOW_CREDENTIALS = True
