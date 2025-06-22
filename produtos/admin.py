@@ -28,6 +28,10 @@ class ProdutoAdmin(admin.ModelAdmin):
     list_editable = ('destaque', 'tag', 'tipo')
     filter_horizontal = ('categorias', 'produtos_inclusos',)
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.prefetch_related('categorias', 'tags')
+
     @admin.display(description='Categorias')
     def display_categorias(self, obj):
         return ", ".join([cat.nome for cat in obj.categorias.all()])
