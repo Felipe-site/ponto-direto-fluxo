@@ -3,6 +3,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
+import { useQuery } from "@tanstack/react-query";
+import api from "@/services/api";
 
 interface Aprovador {
   id: number;
@@ -12,13 +14,17 @@ interface Aprovador {
 }
 
 const AprovadosCarrossel = () => {
-  const [aprovadores, setAprovadores] = useState<Aprovador[]>([]);
+  const { data: aprovadores, isLoading, error } = useQuery<Aprovador[]>({
+    queryKey: ['aprovados'],
+    queryFn: async () => {
+      const response = await api.get("/aprovados/");
+      return response.data;
+    }
+  });
 
-  useEffect(() => {
-    fetch("/api/aprovados/")
-      .then((res) => res.json())
-      .then((data) => setAprovadores(data));
-  }, []);
+  if (isLoading) return <div className="text-center py-12">Carregando aprovados...</div>;
+  if (error) return <div className="text-center py-12 text-red-500">Não foi possível carregar os aprovados.</div>;
+  if (!aprovadores || aprovadores.length === 0) return null;
 
   return (
     <div className="py-12 bg-white">
