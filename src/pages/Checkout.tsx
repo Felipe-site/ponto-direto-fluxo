@@ -1,6 +1,8 @@
 import { useCart } from "@/context/CartContext.tsx";
+import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { LoginModal } from "@/components/LoginModal";
 import Navbar from "@/components/Navbar.tsx";
 import Footer from "@/components/Footer.tsx";
 import api from "@/services/api.ts";
@@ -14,7 +16,10 @@ type StatusPagamento = 'idle' | 'pending' | 'paid' | 'failed' | 'error';
 
 export default function Checkout() {
   const { items, cupom, subtotal, valorDesconto, totalFinal, clearCart, aplicarCupom, removerCupom } = useCart();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   const [statusPagamento, setStatusPagamento] = useState<StatusPagamento>('idle');
   const [pedidoId, setPedidoId] = useState<number | null>(null);
@@ -43,6 +48,12 @@ export default function Checkout() {
   };
 
   const iniciarPagamento = async () => {
+    
+    if (!isAuthenticated) {
+      setIsLoginModalOpen(true);
+      return;
+    }
+
     setStatusPagamento('pending');
     setMensagem('Preparando seu pagamento, um momento...');
 
@@ -125,6 +136,11 @@ export default function Checkout() {
   return (
     <>
       <Navbar />
+
+      <LoginModal 
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
 
       <div className="max-w-5xl mx-auto p-4 py-10">
         <h1 className="text-3xl font-bold mb-5 pt-20">Finalizar Compra</h1>
