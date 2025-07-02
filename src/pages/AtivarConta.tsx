@@ -24,7 +24,7 @@ const AtivarConta = () => {
     if (uid && token) {
       const ativarContaApi = async () => {
         try {
-          await api.get(`/api/activate/${uid}/${token}/`);
+          await api.get(`/activate/${uid}/${token}/`);
           setStatus('sucesso');
           setMessage('Sua conta foi ativada com sucesso! Você será redirecionado para a página de login.');
           toast.success("Conta ativada com sucesso!");
