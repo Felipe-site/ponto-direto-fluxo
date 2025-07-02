@@ -64,6 +64,7 @@ const App = () => {
                     <Route path="/produtos/:slug" element={<ProdutoDetalhe />} />
                     <Route path="/cadastro-concluido" element={<CadastroConcluido />} />
                     <Route path="/ativar-conta" element={<AtivarConta />} />
+                    <Route path="/ativacao/:uid/:token" element={<AtivarConta />} />
                     <Route path="/auth/callback" element={<AuthCallback />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/esqueci-minha-senha" element={<EsqueciSenha />} />
