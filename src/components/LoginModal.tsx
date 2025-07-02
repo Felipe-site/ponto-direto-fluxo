@@ -13,19 +13,35 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative">
-                <button onClick={onClose} className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
-                <h2 className="text-2xl font-bold text-center mb-2">Login Necessário</h2>
-                <p className="text-center text-gray-600 mb-6">
-                    Para continuar com sua compra, por favor, faça o login ou cadastra-se.
-                </p>
+        <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
+            <div
+                className="bg-white rounded-lg shadow-xl w-full max-w-md relative flex flex-col max-h-[90vh] overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <div className="flex justify-between items-center p-4 border-b sticky top-0 bg-white">
+                    <h2 className="text-xl font-bold text-gray-800">Login Necessário</h2>
+                    <button
+                        onClick={onClose}
+                        className="text-gray-500 hover:text-gray-800 text-3xl leading-none"
+                        aria-label="Fechar modal"
+                    >
+                        &times;
+                    </button>
+                </div>
 
-                <LoginBox onLoginSuccess={handleLoginSuccess} />
+                <div className="p-4 sm:p-6">
+                    <p className="text-center text-gray-600 mb-6">
+                        Para continuar com sua compra, por favor, faça o login ou cadastre-se.
+                    </p>
 
-                <p className="text-center text-sm text-gray-500 mt-4">
-                    Não tem uma conta? <a href="/login" className="text-sky-500 hover:underline">Cadastre-se na nossa página de login.</a>
-                </p>
+                    <LoginBox onLoginSuccess={handleLoginSuccess} layout="modal" />
+                </div>
+
+                <div className="p-4 bg-gray-50 border-t text-center">
+                    <p className="text-sm text-gray-600">
+                        Não tem uma conta? <a href="/login" className="text-sky-500 hover:underline font-semibold">Cadastre-se</a>
+                    </p>
+                </div>
             </div>
         </div>
     );
