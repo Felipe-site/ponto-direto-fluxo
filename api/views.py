@@ -344,6 +344,11 @@ def google_login_view(request):
 
         try:
             user = User.objects.get(email=email)
+
+            if not user.is_active:
+                user.is_active = True
+                user.save()
+                print(f"Conta inativa de {email} ativada via Login com Google.")
         except User.DoesNotExist:
             user = User.objects.create_user(
                 username=email, email=email, first_name=nome, last_name=sobrenome, is_active=True

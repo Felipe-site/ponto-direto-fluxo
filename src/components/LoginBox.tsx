@@ -120,7 +120,7 @@ export const LoginBox = ({ onLoginSuccess, layout = 'default' }: LoginBoxProps) 
 
   return (
     <div className="bg-gray-100 p-6 rounded-lg shadow-sm">
-        <h3 className="text-xl font-semibold mb-4">{layout === 'modal' ? 'Entrar ou Criar Conta' : 'Entrar'}</h3>
+        <h3 className="text-xl font-semibold mb-4 text-center">{layout === 'modal' ? 'Entrar ou Criar Conta' : 'Entrar'}</h3>
 
         {layout === 'modal' ? (
             <>

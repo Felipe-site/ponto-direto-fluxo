@@ -13,6 +13,8 @@ from .tokens import account_activation_token
 from pedidos.models import Pedido, ItemPedido
 from produtos.models import Produto, Cupom
 from aprovados.models import Aprovado
+from django.conf import settings
+from decouple import config
 
 
 class CategoriaSerializer(serializers.ModelSerializer):
@@ -84,7 +86,8 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = account_activation_token.make_token(user)
-        activation_link = f"http://localhost:8000/api/activate/{uid}/{token}/"
+        frontend_url = config('FRONTEND_URL', default='http://localhost:8080')
+        activation_link = f"{frontend_url}/ativacao/{uid}/{token}/"
 
         email_subject = "Ative sua conta no Direto no Ponto"
         email_body = f"Olá {user.username}, \n\nClique no link abaixo para ativar sua conta:\n{activation_link}"

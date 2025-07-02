@@ -19,7 +19,7 @@ export const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex justify-between items-center p-4 border-b sticky top-0 bg-white">
-                    <h2 className="text-xl font-bold text-gray-800">Login Necessário</h2>
+                    <h2 className="text-xl font-bold text-gray-800 flex-grow text-center">Login Necessário</h2>
                     <button
                         onClick={onClose}
                         className="text-gray-500 hover:text-gray-800 text-3xl leading-none"
