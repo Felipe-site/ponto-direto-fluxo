@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import api from "@/services/api.ts";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
 
 type StatusPagina = 'ativando' | 'sucesso' | 'erro' | 'reenviar';
 
@@ -12,6 +13,7 @@ const AtivarConta = () => {
   const { uid, token } = useParams<{ uid: string; token: string }>();
   const location = useLocation();
   const navigate = useNavigate();
+  const { loginWithTokens } = useAuth();
 
   const initialState: StatusPagina = uid && token ? 'ativando' : 'reenviar';
   const [status, setStatus] = useState<StatusPagina>(initialState);
@@ -24,11 +26,17 @@ const AtivarConta = () => {
     if (uid && token) {
       const ativarContaApi = async () => {
         try {
-          await api.get(`/activate/${uid}/${token}/`);
+          const response = await api.get(`/activate/${uid}/${token}/`);
+
+          const { access_token, refresh_token } = response.data;
+          loginWithTokens(access_token, refresh_token);
+
           setStatus('sucesso');
-          setMessage('Sua conta foi ativada com sucesso! Você será redirecionado para a página de login.');
-          toast.success("Conta ativada com sucesso!");
-          setTimeout(() => navigate('/login'), 5000);
+
+          setMessage('Sua conta foi ativada com sucesso! Você será redirecionado para a sua área do aluno.');
+          toast.success("Conta ativada e login realizado!");
+
+          setTimeout(() => navigate('/area-do-aluno'), 5000);
         } catch (error) {
           console.error("Erro na ativação: ", error);
           setStatus('erro');
@@ -39,7 +47,7 @@ const AtivarConta = () => {
     } else {
       setStatus('reenviar');
     }
-  }, [uid, token, navigate]);
+  }, [uid, token, navigate, loginWithTokens]);
 
   const handleReenviar = async () => {
     if (!emailParaReenvio) {
@@ -47,7 +55,7 @@ const AtivarConta = () => {
       return;
     }
     try {
-      await api.post("api/reenviar-confirmacao/", { email: emailParaReenvio });
+      await api.post("/reenviar-confirmacao/", { email: emailParaReenvio });
       toast.success("Um novo e-mail de ativação foi enviado para você!");
     } catch {
       toast.error("Erro ao reenviar o e-mail. Tente novamente mais tarde.");
