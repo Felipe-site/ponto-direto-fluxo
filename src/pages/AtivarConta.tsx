@@ -47,7 +47,7 @@ const AtivarConta = () => {
     } else {
       setStatus('reenviar');
     }
-  }, [uid, token, navigate, loginWithTokens]);
+  }, [uid, token]);
 
   const handleReenviar = async () => {
     if (!emailParaReenvio) {
@@ -102,8 +102,8 @@ const AtivarConta = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-grow flex items-center justify-center">
-        <div className="text-center p-8 max-w-2xl">
+      <main className="flex flex-col flex-grow items-center justify-center px-4 text-center pt-20">
+        <div className="max-w-2xl">
           {renderContent()}
         </div>
       </main>
