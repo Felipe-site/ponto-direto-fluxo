@@ -167,6 +167,7 @@ class ActivationAccountView(APIView):
 def verificar_cupom(request):
     codigo = request.data.get('codigo')
     total = Decimal(request.data.get('total', 0))
+    product_ids_no_carrinho = request.data.get('product_ids', [])
     user = request.user if request.user.is_authenticated else None
 
     try:
@@ -183,10 +184,31 @@ def verificar_cupom(request):
         if user and CupomUsado.objects.filter(cupom=cupom, usuario=user).exists():
             return Response({"valido": False, "erro": "Você já usou este cupom."})
         
+        produtos_elegiveis = cupom.produtos_elegiveis.all()
+
+        if produtos_elegiveis.exists():
+            ids_elegiveis = set(produtos_elegiveis.values_list('id', flat=True))
+            ids_carrinho = set(product_ids_no_carrinho)
+
+            if not ids_elegiveis.intersection(ids_carrinho):
+                return Response({"valido": False, "erro": "Este cupom não é válido para os produtos no seu carrinho."})
+        
+            subtotal_elegivel = 0
+            itens_no_carrinho = request.data.get("itens", [])
+            for item in itens_no_carrinho:
+                if item['produto'] in ids_elegiveis:
+                    produto = Produto.objects.get(id=item['produto'])
+                    subtotal_elegivel += produto.preco * item['quantidade']
+        
+            total_para_calculo = Decimal(subtotal_elegivel)
+
+        else: 
+            total_para_calculo = Decimal(request.data.get('total', 0))
+        
         if cupom.tipo == 'percentual':
-            desconto = (total * cupom.valor/100).quantize(Decimal("0.01"))
+            desconto = (total_para_calculo * cupom.valor/100).quantize(Decimal("0.01"))
         else:
-            desconto = min(cupom.valor, total)
+            desconto = min(cupom.valor, total_para_calculo)
 
         return Response({
             "valido": True,

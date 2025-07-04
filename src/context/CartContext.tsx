@@ -52,9 +52,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [cupom]);
 
   const aplicarCupom = async (codigo: string) => {
+    const product_ids = items.map(item => item.id);
     const res = await api.post("/verificar-cupom/", {
       codigo: codigo,
-      total: subtotal,
+      subtotal: subtotal,
+      product_ids: product_ids,
+      itens: items.map(item => ({produto: item.id, quantidade: item.quantidade}))
     });
     
     if (res.data.valido) {

@@ -102,10 +102,10 @@ const AtivarConta = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex flex-col flex-grow items-center justify-center px-4 text-center pt-20">
-        <div className="max-w-2xl">
-          {renderContent()}
-        </div>
+      <main className="min-h-screen bg-white flex flex-col justify-center items-center px-4 py-12">
+          <div className="max-w-2xl text-center">
+            {renderContent()}
+          </div>
       </main>
       <Footer />
     </div>

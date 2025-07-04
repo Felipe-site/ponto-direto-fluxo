@@ -141,6 +141,12 @@ class Cupom(models.Model):
         help_text="Valor mínimo do pedido para uso do cupom (opcional)"
     )
     uso_maximo = models.PositiveIntegerField(null=True, blank=True, help_text="Máximo de usos globais (opcional)")
+    produtos_elegiveis = models.ManyToManyField(
+        'Produto',
+        blank=True,
+        verbose_name="Produtos Elegíveis",
+        help_text="Deixe em branco para que o cupom seja aplicável a qualquer produto. Selecione um ou mais produtos para restringir o uso do cupom apenas a eles."
+    )
     
     def __str__(self):
         return f"{self.codigo} ({self.tipo})"

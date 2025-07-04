@@ -72,6 +72,7 @@ class CupomAdmin(admin.ModelAdmin):
     list_display = ('codigo', 'tipo', 'valor', 'ativo', 'validade')
     list_filter = ('ativo', 'tipo', 'validade')
     search_fields = ('codigo',)
+    filter_horizontal = ('produtos_elegiveis',)
 
 @admin.register(CupomUsado)
 class CupomUsadoAdmin(admin.ModelAdmin):
