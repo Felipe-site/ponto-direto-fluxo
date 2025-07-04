@@ -185,6 +185,7 @@ def verificar_cupom(request):
             return Response({"valido": False, "erro": "Você já usou este cupom."})
         
         produtos_elegiveis = cupom.produtos_elegiveis.all()
+        produtos_elegiveis_ids = list(cupom.produtos_elegiveis.values_list('id', flat=True))
 
         if produtos_elegiveis.exists():
             ids_elegiveis = set(produtos_elegiveis.values_list('id', flat=True))
@@ -216,7 +217,8 @@ def verificar_cupom(request):
             "codigo": cupom.codigo,
             "tipo": cupom.tipo,
             "valor": float(cupom.valor),
-            "desconto": float(desconto)
+            "desconto": float(desconto),
+            "produtos_elegiveis": produtos_elegiveis_ids
         })
     except Cupom.DoesNotExist:
         return Response({"valido": False, "erro": "Cupom inválido."})

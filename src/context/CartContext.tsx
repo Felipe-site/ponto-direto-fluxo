@@ -1,6 +1,16 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { Produto } from "@/types/produto.ts";
-import api from "@/services/api.ts"; // Importamos o 'api' para fazer a chamada
+import api from "@/services/api.ts";
+import { toast } from "sonner";
+
+interface Cupom {
+  id: number;
+  codigo: string;
+  tipo: 'percentual' | 'fixo';
+  valor: number;
+  desconto: number;
+  produtos_elegiveis: number[];
+}
 
 interface CartItem extends Produto {
   quantidade: number;
@@ -15,13 +25,11 @@ interface CartContextType {
   incrementar: (id: number) => void;
   decrementar: (id: number) => void;
 
-  // O estado do cupom e os totais continuam aqui
   cupom: any;
   subtotal: number;
   valorDesconto: number;
   totalFinal: number;
 
-  // Expondo a nova função para aplicar o cupom
   aplicarCupom: (codigo: string) => Promise<any>;
   removerCupom: () => void;
 }
@@ -53,19 +61,26 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const aplicarCupom = async (codigo: string) => {
     const product_ids = items.map(item => item.id);
-    const res = await api.post("/verificar-cupom/", {
-      codigo: codigo,
-      subtotal: subtotal,
-      product_ids: product_ids,
-      itens: items.map(item => ({produto: item.id, quantidade: item.quantidade}))
-    });
-    
-    if (res.data.valido) {
-      setCupom(res.data); 
-      return res.data;
-    } else {
-      setCupom(null); 
-      throw new Error(res.data.erro || "Cupom inválido ou não aplicável.");
+    const itensParaApi = items.map(item => ({produto: item.id, quantidade: item.quantidade}));
+
+    try {
+      const res = await api.post("/verificar-cupom/", {
+        codigo: codigo,
+        subtotal: subtotal,
+        product_ids: product_ids,
+        itens: itensParaApi, 
+      });
+      
+      if (res.data.valido) {
+        setCupom(res.data); 
+        return res.data;
+      } else {
+        setCupom(null); 
+        throw new Error(res.data.erro || "Cupom inválido ou não aplicável.");
+      }
+    } catch (e: any) {
+      setCupom(null);
+      throw e;
     }
   };
 
@@ -92,18 +107,40 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
+  const revalidarCupom = (cupomAtual: Cupom | null, novosItens: CartItem[]) => {
+    if (!cupomAtual || !cupomAtual.produtos_elegiveis || cupomAtual.produtos_elegiveis.length === 0) {
+      return;
+    }
+
+    const idsNoCarrinho = new Set(novosItens.map(item => item.id));
+    const aindaValido = cupomAtual.produtos_elegiveis.some(id_elegivel => idsNoCarrinho.has(id_elegivel));
+
+    if (!aindaValido) {
+      setCupom(null);
+      toast.info("O cupom foi removido, pois o produto elegível foi retirado do carrinho.");
+    }
+  };
+
   const decrementar = (id: number) => {
-    setItems((prev) =>
-      prev
-        .map((item) =>
-          item.id === id ? { ...item, quantidade: item.quantidade - 1 } : item
+    setItems((prevItens) => {
+      const novosItens = prevItens
+        .map((item) => 
+          item.id === id ? { ...item, quantidade: item.quantidade - 1}: item
         )
-        .filter((item) => item.quantidade > 0)
-    );
+        .filter((item) => item.quantidade > 0);
+
+      revalidarCupom(cupom, novosItens);
+
+      return novosItens;
+    });
   };
 
   const removeFromCart = (id: number) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
+    setItems((prevItens) => {
+      const novosItens = prevItens.filter((item) => item.id !== id);
+      revalidarCupom(cupom, novosItens);
+      return novosItens;
+    });
   };
 
   const clearCart = () => {
@@ -117,7 +154,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const getQuantity = () =>
     items.reduce((acc, item) => acc + item.quantidade, 0);
-
 
   const subtotal = items.reduce((acc, item) => acc + Number(item.preco) * item.quantidade, 0);
   const valorDesconto = cupom?.desconto || 0;
