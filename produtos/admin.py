@@ -73,11 +73,11 @@ class ProdutoAdmin(admin.ModelAdmin):
         produto = form.instance
 
         if not produto.codigo and produto.categorias.exists():
-            primeira_categoria = produto.categorias.exists()
+            primeira_categoria = produto.categorias.first()
             if primeira_categoria:
                 produto.codigo = gerar_codigo_produto(primeira_categoria.sigla, produto.concurso)
-                produto.save()
-
+                produto.save(update_fields=['codigo'])
+                
 @admin.register(Cupom)
 class CupomAdmin(admin.ModelAdmin):
     list_display = ('codigo', 'tipo', 'valor', 'ativo', 'validade')
