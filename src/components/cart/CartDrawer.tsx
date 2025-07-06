@@ -10,7 +10,7 @@ interface Props {
 
 export const CartDrawer = ({ isOpen, onClose }: Props) => {
   const navigate = useNavigate();
-  const { items, removeFromCart, incrementar, decrementar } = useCart();
+  const { items, removeFromCart } = useCart();
   const subtotal = items.reduce((acc, item) => acc + item.preco * item.quantidade, 0)
 
   return (
@@ -39,24 +39,8 @@ export const CartDrawer = ({ isOpen, onClose }: Props) => {
               <p className="font-medium">{item.titulo}</p>
               <p className="text-sm text-gray-600">Preço: R$ {Number(item.preco).toFixed(2)}</p>
 
-              <div className="flex items-center gap-2 mt-2">
-                <button
-                  onClick={() => decrementar(item.id)}
-                  className="px-2 bg-gray-200 text-black rounded"
-                >
-                  −
-                </button>
-                <span>{item.quantidade}</span>
-                <button
-                  onClick={() => incrementar(item.id)}
-                  className="px-2 bg-gray-200 text-black rounded"
-                >
-                  +
-                </button>
-              </div>
-
               <p className="mt-2 text-sm font-semibold">
-                Subtotal: R$ {(item.preco * item.quantidade).toFixed(2)}
+                Subtotal: R$ {(item.preco).toFixed(2)}
               </p>
             </div>
 

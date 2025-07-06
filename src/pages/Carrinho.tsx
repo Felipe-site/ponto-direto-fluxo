@@ -6,7 +6,7 @@ import Footer from "@/components/Footer.tsx";
 
 export default function Carrinho() {
   const navigate = useNavigate();
-  const { items, removeFromCart, incrementar, decrementar, subtotal, cupom, valorDesconto, totalFinal, aplicarCupom, removerCupom } = useCart();
+  const { items, removeFromCart, subtotal, cupom, tipoDesconto, valorDesconto, totalFinal, aplicarCupom, removerCupom } = useCart();
   const [codigoCupom, setCodigoCupom] = useState("");
   const [erroCupom, setErroCupom] = useState<string | null>(null);
 
@@ -45,22 +45,6 @@ export default function Carrinho() {
                   <div className="ml-4 flex-1">
                     <p className="font-bold text-red-600">{item.titulo}</p>
                     <p className="text-sm text-gray-700">Preço unitário: R$ {Number(item.preco).toFixed(2)}</p>
-
-                    <div className="flex items-center gap-2 mt-2">
-                      <button
-                        onClick={() => decrementar(item.id)}
-                        className="px-2 py-1 bg-gray-200 rounded"
-                      >
-                        −
-                      </button>
-                      <span>{item.quantidade}</span>
-                      <button
-                        onClick={() => incrementar(item.id)}
-                        className="px-2 py-1 bg-gray-200 rounded"
-                      >
-                        +
-                      </button>
-                    </div>
 
                     <p className="text-sm font-medium mt-2">
                       Subtotal: R$ {(Number(item.preco) * item.quantidade).toFixed(2)}
@@ -106,6 +90,13 @@ export default function Carrinho() {
               <span>Subtotal</span>
               <span>R$ {subtotal.toFixed(2)}</span>
             </div>
+
+            {valorDesconto > 0 && (
+              <div className="flex justify-between text-red-600 font-bold text-sm mt-2">
+                <span>{tipoDesconto}</span>
+                <span>-R$ {valorDesconto.toFixed(2).replace('.', ',')}</span>
+              </div>
+            )}
 
             {cupom && (
               <div className="flex justify-between text-green-600 text-sm">

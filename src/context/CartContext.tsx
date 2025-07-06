@@ -23,8 +23,6 @@ interface CartContextType {
   removeFromCart: (id: number) => void;
   clearCart: () => void;
   getQuantity: () => number;
-  incrementar: (id: number) => void;
-  decrementar: (id: number) => void;
   cupom: Cupom | null;
   subtotal: number;
   valorDesconto: number;
@@ -89,23 +87,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setItems((prev) => {
       const existente = prev.find((item) => item.id === produto.id);
       if (existente) {
-        return prev.map((item) =>
-          item.id === produto.id
-            ? { ...item, quantidade: item.quantidade + 1 }
-            : item
-        );
-      } else {
-        return [...prev, { ...produto, quantidade: 1 }];
-      }
-    });
-  };
+        toast.info("Este produto já está no seu carrinho!");
+        return prev;
+    }
 
-  const incrementar = (id: number) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, quantidade: item.quantidade + 1 } : item
-      )
-    );
+      toast.success(`${produto.titulo} foi adicionado ao carrinho!`);
+      return [...prev, { ...produto, quantidade: 1}];
+    });
   };
 
   const revalidarCupom = (cupomAtual: Cupom | null, novosItens: CartItem[]) => {
@@ -120,20 +108,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       setCupom(null);
       toast.info("O cupom foi removido, pois o produto elegível foi retirado do carrinho.");
     }
-  };
-
-  const decrementar = (id: number) => {
-    setItems((prevItens) => {
-      const novosItens = prevItens
-        .map((item) => 
-          item.id === id ? { ...item, quantidade: item.quantidade - 1}: item
-        )
-        .filter((item) => item.quantidade > 0);
-
-      revalidarCupom(cupom, novosItens);
-
-      return novosItens;
-    });
   };
 
   const removeFromCart = (id: number) => {
@@ -204,8 +178,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         removeFromCart,
         clearCart,
         getQuantity,
-        incrementar,
-        decrementar,
         cupom,
         subtotal,
         valorDesconto,
