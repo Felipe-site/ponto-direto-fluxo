@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import Categoria, Produto, DetalhesProduto, Cupom, CupomUsado
 from django.utils.html import format_html
 from taggit.models import Tag
+from .models import gerar_codigo_produto
 
 class DetalhesProdutoInline(admin.StackedInline):
     model = DetalhesProduto
@@ -66,6 +67,15 @@ class ProdutoAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+
+        if not obj.codigo and obj.categorias.exists():
+            primeira_categoria = obj.categorias.first()
+            if primeira_categoria:
+                obj.codigo = gerar_codigo_produto(primeira_categoria.sigla, obj.concurso)
+                obj.save()
 
 @admin.register(Cupom)
 class CupomAdmin(admin.ModelAdmin):

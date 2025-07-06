@@ -92,12 +92,6 @@ class Produto(models.Model):
             self.slug = slugify(self.titulo)
         
         super().save(*args, **kwargs)
-
-        if not self.codigo and self.categorias.exists():
-            primeira_categoria = self.categorias.first()
-            if primeira_categoria:
-                self.codigo = gerar_codigo_produto(primeira_categoria.sigla, self.concurso)
-                super().save(update_fields=['codigo'])
     
     def __str__(self):
         return f"{self.titulo} ({self.codigo or 'Sem código'})"
