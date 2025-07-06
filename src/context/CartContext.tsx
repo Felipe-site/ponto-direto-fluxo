@@ -157,10 +157,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     if (quantidadeItens >= 3) {
       percentualDesconto = 0.30;
-      tipoDesconto = 'Combo Automático (3+ itens)';
+      tipoDesconto = '3 itens - 30% OFF';
     } else if (quantidadeItens === 2) {
       percentualDesconto = 0.20;
-      tipoDesconto = 'Combo Automático (2 itens)';
+      tipoDesconto = '2 itens - 20% OFF';
     }
 
     if (percentualDesconto > 0) {
