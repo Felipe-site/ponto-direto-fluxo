@@ -159,7 +159,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const { data: configGlobal } = useQuery({
     queryKey: ['configuracaoGlobal'],
     queryFn: async () => {
-      const res = await api.get('/api/configuracoes/');
+      const res = await api.get('/configuracoes/');
       const config = res.data[0] || { desconto_combo_ativo: false };
       console.log("Configuração Global carregada:", config);
       return config;
