@@ -172,4 +172,4 @@ class PedidoSerializer(serializers.ModelSerializer):
 class AprovadoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Aprovado
-        fields = ["id", "nome", "cargo", "foto"]
+        fields = ["id", "nome", "cargo", "foto", "link_externo"]

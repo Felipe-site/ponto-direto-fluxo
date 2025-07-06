@@ -11,6 +11,7 @@ interface Aprovador {
   nome: string;
   cargo: string;
   foto: string;
+  link_externo?: string;
 }
 
 const AprovadosCarrossel = () => {
@@ -42,19 +43,35 @@ const AprovadosCarrossel = () => {
           1024: { slidesPerView: 3 },
         }}
       >
-        {aprovadores.map((aprov) => (
-          <SwiperSlide key={aprov.id}>
-            <div className="flex flex-col items-center p-4 shadow rounded bg-gray-50">
-              <img
-                src={aprov.foto}
+        {aprovadores.map((aprov) => {
+          const hoverClasses = aprov.link_externo
+            ? "hover:scale-105 hover:shadow-xl transform transition-transform duration-300 cursor-pointer"
+            : "";
+
+          const cardContent = (
+            <div className={`flex flex-col items-center p-4 shadow rounded bg-gray-50 h-full ${hoverClasses}`}>
+              <img 
+                src={aprov.foto.startsWith('http') ? aprov.foto : `https://ponto-direto-fluxo.up.railway.app${aprov.foto}`}
                 alt={aprov.nome}
                 className="w-32 h-32 rounded-full object-cover mb-4"
               />
               <p className="font-semibold">{aprov.nome}</p>
               <p className="text-sm text-gray-600">{aprov.cargo}</p>
             </div>
-          </SwiperSlide>
-        ))}
+          );
+
+          return (
+            <SwiperSlide key={aprov.id} className="p-2">
+              {aprov.link_externo ? (
+                <a href={aprov.link_externo} target="_blank" rel="noopener noreferrer" className="block h-full">
+                  {cardContent}
+                </a>
+              ) : (
+                cardContent
+              )}
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
     </div>
   );
