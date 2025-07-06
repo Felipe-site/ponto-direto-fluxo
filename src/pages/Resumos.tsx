@@ -17,6 +17,7 @@ const Resumos = () => {
 
   const { addToCart } = useCart();
   const { searchTerm } = useSearch();
+  const { isComboDiscountActive } = useCart();
 
   const { data: searchedProducts, isLoading: isLoadingSearch, error } = useQuery<Produto[]>({
     queryKey: ['produtos', { tipo: 'resumo', q: searchTerm }],
@@ -87,7 +88,7 @@ const Resumos = () => {
           </div>
 
           {/* Banner promocional */}
-          {!searchTerm && (
+          {isComboDiscountActive && !searchTerm && (
           <div className="bg-gray-100 p-6 rounded-lg mb-10 text-center">
             <h2 className="text-2xl font-bold text-gray-800 mb-2">Monte o seu combo com até 30% de desconto!</h2>
           </div>

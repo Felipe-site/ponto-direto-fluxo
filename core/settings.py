@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'accounts',
     'django_filters',
     'storages',
+    'configuracoes',
 ]
 
 SITE_ID = 1

@@ -13,12 +13,14 @@ from django.conf.urls.static import static
 from django.conf import settings
 import os
 from accounts.views import UserProfileView, AreaInteresseViewSet
+from configuracoes.views import ConfiguracaoGlobalViewSet
 
 router = DefaultRouter()
 router.register(r'categorias', CategoriaViewSet)
 router.register(r'produtos', ProdutoViewSet)
 router.register(r'aprovados', AprovadoViewSet)
 router.register(r'accounts/areas-interesse', AreaInteresseViewSet, basename='area-interesse')
+router.register(r'configuracoes', ConfiguracaoGlobalViewSet, basename='configuracoes')
 
 urlpatterns = [
     path('', include(router.urls)),

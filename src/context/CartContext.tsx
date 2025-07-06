@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 import { Produto } from "@/types/produto.ts";
 import api from "@/services/api.ts";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
 
 interface Cupom {
   id: number;
@@ -24,14 +25,14 @@ interface CartContextType {
   getQuantity: () => number;
   incrementar: (id: number) => void;
   decrementar: (id: number) => void;
-
-  cupom: any;
+  cupom: Cupom | null;
   subtotal: number;
   valorDesconto: number;
   totalFinal: number;
-
   aplicarCupom: (codigo: string) => Promise<any>;
   removerCupom: () => void;
+  isComboDiscountActive: boolean;
+  tipoDesconto: string;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -155,8 +156,41 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const getQuantity = () =>
     items.reduce((acc, item) => acc + item.quantidade, 0);
 
+  const { data: configGlobal } = useQuery({
+    queryKey: ['configuracaoGlobal'],
+    queryFn: async () => {
+      const res = await api.get('/api/configuracoes/');
+      return res.data[0] || { desconto_combo_ativo: false };
+    }
+  });
+
+  const isComboDiscountActive = configGlobal?.desconto_combo_ativo || false;
   const subtotal = items.reduce((acc, item) => acc + Number(item.preco) * item.quantidade, 0);
-  const valorDesconto = cupom?.desconto || 0;
+  let valorDesconto = 0;
+  let tipoDesconto = '';
+
+  if (cupom) {
+    valorDesconto = cupom.desconto;
+    tipoDesconto = `Cupom ${cupom.codigo}`
+  }
+
+  else if (isComboDiscountActive) {
+    const quantidadeItens = items.reduce((acc, item) => acc + item.quantidade, 0);
+    let percentualDesconto = 0;
+
+    if (quantidadeItens >= 3) {
+      percentualDesconto = 0.30;
+      tipoDesconto = 'Combo Automático (3+ itens)';
+    } else if (quantidadeItens === 2) {
+      percentualDesconto = 0.20;
+      tipoDesconto = 'Combo Automático (2 itens)';
+    }
+
+    if (percentualDesconto > 0) {
+      valorDesconto = subtotal * percentualDesconto;
+    }
+  }
+  
   const totalFinal = subtotal > valorDesconto ? subtotal - valorDesconto : 0;
 
   return (
@@ -175,6 +209,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         totalFinal,
         aplicarCupom,
         removerCupom,
+        isComboDiscountActive,
+        tipoDesconto,
       }}
     >
       {children}
