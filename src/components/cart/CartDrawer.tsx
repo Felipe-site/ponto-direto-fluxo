@@ -40,7 +40,7 @@ export const CartDrawer = ({ isOpen, onClose }: Props) => {
               <p className="text-sm text-gray-600">Preço: R$ {Number(item.preco).toFixed(2)}</p>
 
               <p className="mt-2 text-sm font-semibold">
-                Subtotal: R$ {(item.preco).toFixed(2)}
+                Subtotal: R$ {Number(item.preco).toFixed(2)}
               </p>
             </div>
 

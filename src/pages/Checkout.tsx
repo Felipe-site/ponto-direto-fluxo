@@ -15,7 +15,7 @@ const Spinner = () => (
 type StatusPagamento = 'idle' | 'pending' | 'paid' | 'failed' | 'error';
 
 export default function Checkout() {
-  const { items, cupom, subtotal, valorDesconto, totalFinal, clearCart, aplicarCupom, removerCupom } = useCart();
+  const { items, cupom, subtotal, valorDesconto, tipoDesconto, totalFinal, clearCart, aplicarCupom, removerCupom } = useCart();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -167,6 +167,12 @@ export default function Checkout() {
               <span>Subtotal</span>
               <span>R$ {subtotal.toFixed(2)}</span>
             </div>
+            {valorDesconto > 0 && (
+              <div className="flex justify-between text-red-600 font-bold text-sm mt-2">
+                <span>{tipoDesconto}:</span>
+                <span>-R$ {valorDesconto.toFixed(2).replace('.', ',')}</span>
+              </div>
+            )}
             {cupom && (
               <div className="flex justify-between text-green-600 text-sm">
                 <span>

@@ -93,7 +93,7 @@ export default function Carrinho() {
 
             {valorDesconto > 0 && (
               <div className="flex justify-between text-red-600 font-bold text-sm mt-2">
-                <span>{tipoDesconto}</span>
+                <span>{tipoDesconto}:</span>
                 <span>-R$ {valorDesconto.toFixed(2).replace('.', ',')}</span>
               </div>
             )}
