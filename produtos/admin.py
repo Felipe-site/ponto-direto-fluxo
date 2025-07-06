@@ -68,14 +68,15 @@ class ProdutoAdmin(admin.ModelAdmin):
         }),
     )
 
-    def save_model(self, request, obj, form, change):
-        super().save_model(request, obj, form, change)
+    def save_related(self, request, form, formsets, change):
+        super().save_related(request, form, formsets, change)
+        produto = form.instance
 
-        if not obj.codigo and obj.categorias.exists():
-            primeira_categoria = obj.categorias.first()
+        if not produto.codigo and produto.categorias.exists():
+            primeira_categoria = produto.categorias.exists()
             if primeira_categoria:
-                obj.codigo = gerar_codigo_produto(primeira_categoria.sigla, obj.concurso)
-                obj.save()
+                produto.codigo = gerar_codigo_produto(primeira_categoria.sigla, produto.concurso)
+                produto.save()
 
 @admin.register(Cupom)
 class CupomAdmin(admin.ModelAdmin):

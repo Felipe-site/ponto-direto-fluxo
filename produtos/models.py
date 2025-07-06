@@ -59,7 +59,7 @@ class Produto(models.Model):
     # Campos principais
     codigo = models.CharField(max_length=50, unique=True, blank=True, null=True, editable=False)
     titulo = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True, blank=True)
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
     descricao = models.TextField()
     descricao_curta = models.TextField(blank=True, null=True)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
