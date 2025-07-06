@@ -160,11 +160,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     queryKey: ['configuracaoGlobal'],
     queryFn: async () => {
       const res = await api.get('/api/configuracoes/');
-      return res.data[0] || { desconto_combo_ativo: false };
+      const config = res.data[0] || { desconto_combo_ativo: false };
+      console.log("Configuração Global carregada:", config);
+      return config;
     }
   });
 
-  const isComboDiscountActive = configGlobal?.desconto_combo_ativo || false;
+  const isComboDiscountActive = configGlobal?.desconto_combo_ativo ?? false;
+
   const subtotal = items.reduce((acc, item) => acc + Number(item.preco) * item.quantidade, 0);
   let valorDesconto = 0;
   let tipoDesconto = '';
@@ -175,7 +178,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }
 
   else if (isComboDiscountActive) {
-    const quantidadeItens = items.reduce((acc, item) => acc + item.quantidade, 0);
+    const quantidadeItens = items.length;
     let percentualDesconto = 0;
 
     if (quantidadeItens >= 3) {
@@ -191,7 +194,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   }
   
-  const totalFinal = subtotal > valorDesconto ? subtotal - valorDesconto : 0;
+  const totalFinal = subtotal - valorDesconto;
 
   return (
     <CartContext.Provider
