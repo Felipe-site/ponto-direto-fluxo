@@ -161,7 +161,7 @@ const ProdutoDetalhe = () => {
                       <span>Cartão de débito</span>
                     </div>
                     <div className="flex items-center justify-center gap-2">
-                      <img src="/boleto.png" alt="Boleto" className="h-4 w-5 mr-1" />
+                      <img src="/boleto.png" alt="Boleto" className="h-3 w-4 mr-1" />
                       <span>Boleto</span>
                     </div>
                     <div className="flex items-center justify-center gap-2">
