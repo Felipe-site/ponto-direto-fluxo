@@ -72,7 +72,7 @@ class ProdutoDetailSerializer(serializers.ModelSerializer, TaggitSerializer):
             return []
         
         produtos_relacionados = Produto.objects.filter(
-            categorias__in=categorias_do_produto
+            categorias__in=categorias_do_produto, ativo=True
         ).exclude(
             id=obj.id
         ).distinct().order_by('-data_criacao')[:4]

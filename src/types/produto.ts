@@ -41,6 +41,6 @@ export interface DetalhesProduto {
 }
 
 export interface ProdutoDetalhado extends Produto {
-  detalhes: DetalhesProduto;
+  detalhes: DetalhesProduto | null;
   produtos_relacionados: Produto[];
 }
