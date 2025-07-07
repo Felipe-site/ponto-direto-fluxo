@@ -12,10 +12,11 @@ import {
 import { useCart } from '@/context/CartContext';
 import { CartDrawer } from './cart/CartDrawer';
 
-const Navbar = () => {
+export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { getQuantity } = useCart();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isMobileMaterialsOpen, setIsMobileMaterialsOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -35,7 +36,6 @@ const Navbar = () => {
           </div>
 
           {/* Bloco da Direita: Itens de Navegação Centralizados (Desktop) */}
-          {/* Este container ocupa o espaço restante (flex-1) e centraliza seu conteúdo (justify-center) */}
           <div className="hidden md:flex flex-1 items-center justify-center space-x-6">
             <SearchBar />
             
@@ -85,61 +85,56 @@ const Navbar = () => {
           </div>
 
           {/* Botão do Menu Mobile */}
-          <div className="md:hidden">
-            <button
-              onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gabarito hover:bg-gray-100 focus:outline-none"
-            >
-              <span className="sr-only">Abrir menu</span>
+          <div className="md:hidden flex items-center gap-4">
+            <button onClick={() => setIsDrawerOpen(true)} className="relative">
+              <ShoppingCart className="w-6 h-6" />
+              {getQuantity() > 0 && (
+                <span className="absolute -top-2 -right-2 text-xs bg-red-600 text-white w-5 h-5 rounded-full flex items-center justify-center">
+                  {getQuantity()}
+                </span>
+              )}
+            </button>
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
-
         </div>
       </div>
 
       {/* Menu Mobile (código permanece o mesmo) */}
       {isMenuOpen && (
         <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white shadow-lg">
             <div className="px-3 py-2">
               <SearchBar />
             </div>
             <Link 
-              to="/login" 
+              to="/area-do-aluno" 
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gabarito hover:bg-gray-100"
             >
               Área de Alunos
             </Link>
-            <div className="relative">
+
+            <div>
               <button
+                onClick={() => setIsMobileMaterialsOpen(!isMobileMaterialsOpen)}
                 className="w-full flex items-center justify-between px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gabarito hover:bg-gray-100"
               >
-                Materiais
-                <ChevronDown className="h-4 w-4" />
+                <span>Materiais</span>
+                <ChevronDown className={`h-4 w-4 transition-transform ${isMobileMaterialsOpen ? 'rotate-180' : ''}`} />
               </button>
-              <div className="pl-4">
-                <Link
-                  to="/materiais/resumos"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gabarito hover:bg-gray-100"
-                >
-                  Resumos
-                </Link>
-                <Link
-                  to="/materiais/combos"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gabarito hover:bg-gray-100"
-                >
-                  Combos
-                </Link>
-              </div>
+              {isMobileMaterialsOpen && (
+                <div className="pl-4 mt-1 space-y-1">
+                  <Link to="/materiais/resumos" className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gabarito hover:bg-gray-100">
+                    Resumos
+                  </Link>
+                  <Link to="/materiais/combos" className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gabarito hover:bg-gray-100">
+                    Combos
+                  </Link>
+                </div>
+              )}
             </div>
-            <Link 
-              to="/carrinho" 
-              className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gabarito hover:bg-gray-100"
-            >
-              <ShoppingCart className="h-5 w-5 mr-2" />
-              Carrinho (0)
-            </Link>
+
           </div>
         </div>
       )}
