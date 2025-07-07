@@ -15,7 +15,7 @@ Produtos(s) adquiridos(s): {nomes_produtos}
 
 Você já pode acessar seus materiais completos na sua área de alunos em nosso site.
 
-Acesse agora: http://localhost:8080/area-do-aluno
+Acesse agora: https://ponto-direto-fluxo.vercel.app/area-do-aluno
 
 Bons estudos!
 

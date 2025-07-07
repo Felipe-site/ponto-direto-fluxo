@@ -14,6 +14,7 @@ from api.serializers import PedidoSerializer, ProdutoMaterialSerializer
 import traceback
 from .emails import enviar_email_falha_pagamento, enviar_email_pedido_pago
 from decimal import Decimal
+from accounts.models import Profile, Endereco
 
 from decimal import Decimal
 import traceback
@@ -130,6 +131,37 @@ def pagarme_webhook(request):
 
             if pedido.status == 'pago':
                 enviar_email_pedido_pago(pedido)
+                try:
+                    usuario = pedido.usuario
+
+                    customer_data = data.get('customer', {})
+                    address_data = customer_data.get('address', {})
+                    phones_data = customer_data.get('phones', {}).get('mobile_phone', {})
+
+                    if phones_data and phones_data.get('area-code') and phones_data.get('number'):
+                        profile, _ = Profile.objects.get_or_create(user=usuario)
+                        profile.telefone = f"{phones_data.get('area_code')}{phones_data.get('number')}"
+                        profile.save()
+                        print(f"Telefone do usuário {usuario.email} atualizado via webhook.")
+                    
+                    if address_data and address_data.get('street') and address_data.get('zip_code'):
+                        Endereco.objects.update_or_create(
+                            usuario=usuario,
+                            defaults={
+                                'rua': address_data.get('street'),
+                                'numero': address_data.get('number'),
+                                'complemento': address_data.get('line_2', ''),
+                                'bairro': address_data.get('neighborhood'),
+                                'cidade': address_data.get('city'),
+                                'estado': address_data.get('state'),
+                                'cep': address_data.get('zip_code'),
+                                'pais': address_data.get('country', 'BR')
+                            }
+                        )
+                    
+                except Exception as e:
+                    print(f"Alerta: Erro ao tentar sincronizar dados do cliente via webhook: {e}")
+
             elif pedido.status == 'falhou':
                 enviar_email_falha_pagamento(pedido)
             

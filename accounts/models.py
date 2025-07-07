@@ -38,10 +38,21 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'Perfil de {self.user.username}'
-'''
-@receiver(post_save, sender=User)
-def create_or_update_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
-    instance.profile.save()
-'''
+
+class Endereco(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enderecos')
+    rua = models.CharField(max_length=255)
+    numero = models.CharField(max_length=20)
+    complemento = models.CharField(max_length=100, blank=True, null=True)
+    bairro = models.CharField(max_length=100)
+    cidade = models.CharField(max_length=100)
+    estado = models.CharField(max_length=2)
+    cep = models.CharField(max_length=9, verbose_name="CEP")
+    pais = models.CharField(max_length=2, default='BR')
+
+    def __str__(self):
+        return f"Endereço de {self.usuario.username} - {self.rua}, {self.numero}"
+    
+    class Meta:
+        verbose_name = "Endereço"
+        verbose_name_plural = "Endereços"

@@ -1,12 +1,21 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from .models import Profile, AreaInteresse
+from .models import Profile, AreaInteresse, Endereco
 
 @admin.register(AreaInteresse)
 class AreaInteresseAdmin(admin.ModelAdmin):
     list_display = ('nome', 'slug')
     prepopulated_fields = {'slug': ('nome',)}
+
+@admin.register(Endereco)
+class EnderecoAdmin(admin.ModelAdmin):
+    list_display = ('usuario', 'rua', 'cidade', 'estado')
+    search_fields = ('usuario__username', 'cep', 'cidade')
+
+class EnderecoInline(admin.TabularInline):
+    model = Endereco
+    extra = 1
 
 class ProfileInline(admin.StackedInline):
     model = Profile
@@ -33,4 +42,6 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
+
+
 

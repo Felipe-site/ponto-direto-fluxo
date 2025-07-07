@@ -5,6 +5,7 @@ from django.conf import settings
 import base64
 from decouple import config
 from decimal import Decimal
+from accounts.models import Endereco, Profile
 
 def criar_link_pagamento(pedido, usuario):
     url = config('PAGARME_API_URL')
@@ -54,6 +55,8 @@ def criar_link_pagamento(pedido, usuario):
                 "amount": int(item.produto.preco * 100 * item.quantidade),
                 "default_quantity": 1
             })
+    
+
 
     total_in_cents = int(pedido.total * 100)
 
@@ -69,6 +72,34 @@ def criar_link_pagamento(pedido, usuario):
         }
         for i in range(1, max_installments + 1)
     ]
+
+    profile = Profile.objects.filter(user=usuario).first()
+    endereco_salvo = Endereco.objects.filter(usuario=usuario).first()
+
+    customer_data = {
+        "name": usuario.get_full_name() or usuario.username,
+        "email": usuario.email
+    }
+
+    if profile and profile.telefone:
+        if len(profile.telefone) >= 10:
+            customer_data['phones'] = {
+                "mobile_phone": {
+                    "country_code": "55",
+                    "area_code": profile.telefone[:2],
+                    "number": profile.telefone[2:]
+                }
+            }
+    
+    if endereco_salvo:
+        customer_data['address'] = {
+            "line_1": f"{endereco_salvo.rua}, {endereco_salvo.numero}",
+            "line_2": endereco_salvo.complemento or "",
+            "zip_code": endereco_salvo.cep.replace('-', ''),
+            "city": endereco_salvo.cidade,
+            "state": endereco_salvo.estado,
+            "country": endereco_salvo.pais
+        }
 
     body = {
         "type": "order",
@@ -104,15 +135,12 @@ def criar_link_pagamento(pedido, usuario):
                     "billing_address_editable": False,
                     "customer_editable": False,
                     "skip_checkout_success_page": False,
-                    "success_url": "http://localhost:8080/pagamento/sucesso"
+                    "success_url": "https://ponto-direto-fluxo.vercel.app/pagamento/sucesso"
                 }
             }
         ],
         "customer_settings": {
-            "customer": {
-                "name": usuario.get_full_name() or usuario.username,
-                "email": usuario.email
-            }
+            "customer": customer_data
         }
     }
     """

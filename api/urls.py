@@ -12,7 +12,7 @@ from produtos.views import servir_amostra_pdf, servir_arquivo_completo, servir_c
 from django.conf.urls.static import static
 from django.conf import settings
 import os
-from accounts.views import UserProfileView, AreaInteresseViewSet
+from accounts.views import UserProfileView, AreaInteresseViewSet, EnderecoViewSet
 from configuracoes.views import ConfiguracaoGlobalViewSet
 
 router = DefaultRouter()
@@ -21,6 +21,7 @@ router.register(r'produtos', ProdutoViewSet)
 router.register(r'aprovados', AprovadoViewSet)
 router.register(r'accounts/areas-interesse', AreaInteresseViewSet, basename='area-interesse')
 router.register(r'configuracoes', ConfiguracaoGlobalViewSet, basename='configuracoes')
+router.register(r'enderecos', EnderecoViewSet, basename='enderecos')
 
 urlpatterns = [
     path('', include(router.urls)),

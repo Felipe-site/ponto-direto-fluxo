@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar.tsx";
 import Footer from "@/components/Footer.tsx";
 import DetalhesDaContaForm from "@/components/DetalhesDaContaForm.tsx";
 import AlterarSenhaForm from "@/components/AlterarSenhaForm.tsx";
+import EnderecoForm from "@/components/EnderecoForm";
 
 interface Material {
   id: number;
@@ -28,20 +29,6 @@ const AreaDoAluno = () => {
   const [materiais, setMateriais] = useState<Material[]>([]);
   const [loadingMateriais, setLoadingMateriais] = useState(true);
   const [downloading, setDownloading] = useState<number | null>(null);
-
-  {/*
-  useEffect(() => {
-    if(token) {
-      api
-        .get("/me/", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => setUser(res.data));
-    }
-  }, [token]);
-  */}
 
   useEffect(() => {
     if(token) {
@@ -195,10 +182,6 @@ const AreaDoAluno = () => {
                 </div>
               )}
 
-              {activeTab === "enderecos" && (
-                <p className="text-gray-600">Você ainda não adicionou endereços.</p>
-              )}
-
               {activeTab === "conta" && (
                 <div className="space-y-2 text-gray-700">
                   <h2 className="text-2xl font-semibold mb-4 text-slate-800">Detalhes da Conta</h2>
@@ -206,6 +189,14 @@ const AreaDoAluno = () => {
                   <DetalhesDaContaForm />
                 </div>
               )}
+              {activeTab === "enderecos" && (
+                <div className="space-y-2 text-gray-700">
+                  <h2 className="text-2xl font-semibold mb-4 text-slate-800">Meu Endereço</h2>
+                  <p className="text-gray-600 mb-6">Mantenha seu endereço de cobrança atualizado.</p>
+                  <EnderecoForm />
+                </div>
+              )}
+
               {activeTab === "seguranca" && userProfile && (
                 <AlterarSenhaForm signupMethod={userProfile.profile.signup_method} />
               )}

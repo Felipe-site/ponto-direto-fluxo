@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Profile, AreaInteresse
+from .models import Profile, AreaInteresse, Endereco
 
 class AreaInteresseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -66,3 +66,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
         return instance
+    
+class EnderecoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Endereco
+        exclude = ('usuario',)
