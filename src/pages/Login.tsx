@@ -253,7 +253,7 @@ const Login = () => {
                     </a>
                     .
                 </p>
-                <div className="flex items-start">
+                <div className="flex items-start text-sm">
                   <input id="terms" type="checkbox" required className="h-4 w-4 text-sky-600 border-gray-300 rounded focus:ring-sky-500" />
                   <label htmlFor="terms" className="ml-2 block-text-sm text-gray-900">
                     Eu li e concordo com os <Link to="/termos-de-uso" className="text-sky-500 hover:underline">Termos de Uso e Política de Privacidade</Link>.
