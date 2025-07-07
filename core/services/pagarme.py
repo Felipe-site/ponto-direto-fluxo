@@ -20,25 +20,15 @@ def criar_link_pagamento(pedido, usuario):
 
     itens = []
 
-    if pedido.cupom and pedido.cupom.tipo == 'percentual':
-        percentual_desconto = Decimal(pedido.cupom.valor) / 100
-        for item in pedido.itens.all():
-            preco_original_total_item = Decimal(item.produto.preco) * item.quantidade
-            preco_com_desconto = preco_original_total_item * (1 - percentual_desconto)
-            itens.append({
-                "name": item.produto.titulo,
-                "description": item.produto.titulo,
-                "amount": int(preco_com_desconto * 100),
-                "default_quantity": 1
-            })
-
-    elif pedido.cupom and pedido.cupom.tipo == 'fixo':
+    if pedido.desconto > 0:
+        print(f"Aplicando desconto de R$ {pedido.desconto} distribuído entre os itens.")
         desconto_restante = Decimal(pedido.desconto)
+
         for item in pedido.itens.all():
             preco_item_original = Decimal(item.produto.preco) * item.quantidade
             desconto_neste_item = min(preco_item_original, desconto_restante)
             preco_final_item = preco_item_original - desconto_neste_item
-            
+
             itens.append({
                 "name": item.produto.titulo,
                 "description": item.produto.titulo,
@@ -47,7 +37,8 @@ def criar_link_pagamento(pedido, usuario):
             })
             desconto_restante -= desconto_neste_item
     
-    else: 
+    else:
+        print("Nenhum desconto a ser aplicado. Enviando preços cheios.")
         for item in pedido.itens.all():
             itens.append({
                 "name": item.produto.titulo,
@@ -55,13 +46,12 @@ def criar_link_pagamento(pedido, usuario):
                 "amount": int(item.produto.preco * 100 * item.quantidade),
                 "default_quantity": 1
             })
-    
-
 
     total_in_cents = int(pedido.total * 100)
 
     soma_itens_calculada = sum(item['amount'] for item in itens)
-    if soma_itens_calculada != total_in_cents:
+    if abs(soma_itens_calculada - total_in_cents) > 1:
+        print(f"Alerta de arredondamento: Soma dos itens ({soma_itens_calculada}) != Total do pedido ({total_in_cents}). Usando a soma dos itens.")
         total_in_cents = soma_itens_calculada
     
     max_installments = 8

@@ -14,7 +14,7 @@ export default function EsqueciSenha() {
         setError('');
         try {
             await api.post('/auth/password/reset', { email });
-            setMessage('Se um usuário com este e-mail exsitir, um link para redefinição de senha foi enviado. Por favor, verifique sua caixa de entrada e spam.');
+            setMessage('Se um usuário com este e-mail existir, um link para redefinição de senha foi enviado. Por favor, verifique sua caixa de entrada e spam.');
         } catch (err) {
             setError('Ocorreu um erro. Por favor, tente novamente.');
         }
