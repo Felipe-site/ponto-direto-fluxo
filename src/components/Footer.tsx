@@ -126,8 +126,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
           <p>&copy; {new Date().getFullYear()} Direto No Ponto. Todos os direitos reservados.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link to="/termos-de-uso" className="hover:text-white transition-colors">Política de Privacidade</Link>
-            <Link to="/termos-de-uso" className="hover:text-white transition-colors">Termos de Uso</Link>
+            <Link to="/termos-de-uso" className="hover:text-white transition-colors">Política de Privacidade & Termos de Uso</Link>
           </div>
         </div>
       </div>
