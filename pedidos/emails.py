@@ -1,8 +1,12 @@
 from django.core.mail import send_mail
 from django.conf import settings
+from decouple import config
 
 def enviar_email_pedido_pago(pedido):
     nomes_produtos = ", ".join([item.produto.titulo for item in pedido.itens.all()])
+
+    frontend_url = config('FRONTEND_URL', default='http://localhost:8080')
+    link_ativacao = f"{frontend_url}/area-do-aluno"
 
     assunto = f"✅ Seu pedido foi aprovado! - Direto no Ponto"
     mensagem = f"""
@@ -15,7 +19,7 @@ Produtos(s) adquiridos(s): {nomes_produtos}
 
 Você já pode acessar seus materiais completos na sua área de alunos em nosso site.
 
-Acesse agora: https://ponto-direto-fluxo.vercel.app/area-do-aluno
+Acesse agora: {link_ativacao}
 
 Bons estudos!
 
@@ -23,7 +27,7 @@ Atenciosamente,
 Equipe Direto no Ponto
 """
     remetente = settings.DEFAULT_FROM_EMAIL
-    destinatario = [pedido.usuario.username]
+    destinatario = [pedido.usuario.email]
 
     try:
         send_mail(assunto, mensagem, remetente, destinatario, fail_silently=False)

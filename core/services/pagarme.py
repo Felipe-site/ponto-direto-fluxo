@@ -135,7 +135,7 @@ def criar_link_pagamento(pedido, usuario):
                     "billing_address_editable": False,
                     "customer_editable": False,
                     "skip_checkout_success_page": False,
-                    "success_url": "https://ponto-direto-fluxo.vercel.app/pagamento/sucesso"
+                    "success_url": "https://www.diretonoponto.com.br/pagamento/sucesso"
                 }
             }
         ],
