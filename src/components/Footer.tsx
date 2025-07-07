@@ -94,10 +94,12 @@ const Footer = () => {
                 <MapPin className="h-5 w-5 text-primary-400 mr-2 flex-shrink-0 mt-0.5" />
                 <span className="text-gray-400">Rua Visconde de Pirajá, 414, Sala 718 - Rio de Janeiro, RJ</span>
               </li>
+              {/*
               <li className="flex items-center">
                 <Phone className="h-5 w-5 text-primary-400 mr-2 flex-shrink-0" />
                 <span className="text-gray-400">(21) 96406-0760</span>
               </li>
+              */}
               <li className="flex items-center">
                 <Mail className="h-5 w-5 text-primary-400 mr-2 flex-shrink-0" />
                 <span className="text-gray-400">dflensinoltda@gmail.com</span>
@@ -124,8 +126,8 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
           <p>&copy; {new Date().getFullYear()} Direto No Ponto. Todos os direitos reservados.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link to="#" className="hover:text-white transition-colors">Política de Privacidade</Link>
-            <Link to="#" className="hover:text-white transition-colors">Termos de Uso</Link>
+            <Link to="/termos-de-uso" className="hover:text-white transition-colors">Política de Privacidade</Link>
+            <Link to="/termos-de-uso" className="hover:text-white transition-colors">Termos de Uso</Link>
           </div>
         </div>
       </div>

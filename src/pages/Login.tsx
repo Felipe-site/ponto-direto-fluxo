@@ -248,11 +248,17 @@ const Login = () => {
                 <p className="text-xs text-gray-600">
                     Seus dados pessoais serão usados para aprimorar sua experiência neste site.
                     Consulte nossa{" "}
-                    <a href="#" className="text-red-600 hover:underline">
+                    <a href="/termos-de-uso" className="text-red-600 hover:underline">
                     política de privacidade
                     </a>
                     .
                 </p>
+                <div className="flex items-start">
+                  <input id="terms" type="checkbox" required className="h-4 w-4 text-sky-600 border-gray-300 rounded focus:ring-sky-500" />
+                  <label htmlFor="terms" className="ml-2 block-text-sm text-gray-900">
+                    Eu li e concordo com os <Link to="/termos-de-uso" className="text-sky-500 hover:underline">Termos de Uso e Política de Privacidade</Link>.
+                  </label>
+                </div>
                 <ReCAPTCHA
                   sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
                   onChange={(token) => setRecaptchaToken(token)}

@@ -24,6 +24,7 @@ import EsqueciSenha from "./pages/EsqueciSenha";
 import RedefinirSenha from "./pages/RedefinirSenha";
 import { SearchProvider } from "./context/SearchContext";
 import Combos from "./pages/Combos";
+import TermosDeUso from "./pages/TermoDeUso";
 
 const queryClient = new QueryClient();
 
@@ -69,8 +70,9 @@ const App = () => {
                     <Route path="/login" element={<Login />} />
                     <Route path="/esqueci-minha-senha" element={<EsqueciSenha />} />
                     <Route path="/redefinir-senha/:uid/:token" element={<RedefinirSenha />} />
-                    <Route path="/carrinho" element={<Carrinho />}/>
-                    <Route path="/checkout" element={<Checkout />}/>
+                    <Route path="/carrinho" element={<Carrinho />} />
+                    <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/termos-de-uso" element={<TermosDeUso />} />
                     <Route 
                       path="/area-do-aluno"
                       element={
