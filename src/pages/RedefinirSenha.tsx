@@ -3,6 +3,9 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '@/services/api.ts';
 import Navbar from '@/components/Navbar.tsx';
 import Footer from '@/components/Footer.tsx';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
 
 export default function RedefinirSenha() {
   // Pega os parâmetros 'uid' e 'token' da URL
@@ -60,9 +63,25 @@ export default function RedefinirSenha() {
       }, 5000);
 
     } catch (err: any) {
-      // Tenta pegar uma mensagem de erro específica da API, senão usa uma genérica
-      const apiError = err.response?.data?.token?.[0] || err.response?.data?.detail;
-      setError(apiError || 'Link inválido ou expirado. Por favor, solicite um novo link de redefinição.');
+      console.error("Erro na redefinição:", err.response?.data);
+
+      if (err.response && err.response.data) {
+        const errorData = err.response.data;
+
+        const passwordError1 = errorData.new_password1?.[0];
+        const passwordError2 = errorData.new_password2?.[0];
+
+        if (passwordError1) {
+          setError(passwordError1);
+        } else if (passwordError2) {
+          setError(passwordError2);
+        } else {
+          const tokenError = errorData.token?.[0] || errorData.detail;
+          setError(tokenError || 'Link inválido ou expirado. Por favor, solicite um novo link de redefinição.');
+        }
+      } else {
+        setError("Ocorreu um erro de comunicação. Tente novamente mais tarde.");
+      }
     } finally {
       setLoading(false);
     }
