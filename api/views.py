@@ -180,17 +180,17 @@ def verificar_cupom(request):
             if not ids_elegiveis.intersection(ids_carrinho):
                 return Response({"valido": False, "erro": "Este cupom não é válido para os produtos no seu carrinho."})
         
-            subtotal_elegivel = 0
+            subtotal_elegivel = Decimal('0.00')
             itens_no_carrinho = request.data.get("itens", [])
             for item in itens_no_carrinho:
                 if item['produto'] in ids_elegiveis:
                     produto = Produto.objects.get(id=item['produto'])
                     subtotal_elegivel += produto.preco * item['quantidade']
         
-            total_para_calculo = Decimal(subtotal_elegivel)
+            total_para_calculo = subtotal_elegivel
 
         else: 
-            total_para_calculo = Decimal(request.data.get('total', 0))
+            total_para_calculo = Decimal(request.data.get('subtotal', '0.00'))
         
         if cupom.tipo == 'percentual':
             desconto = (total_para_calculo * cupom.valor/100).quantize(Decimal("0.01"))
