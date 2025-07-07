@@ -164,6 +164,10 @@ const ProdutoDetalhe = () => {
                       <img src="/pix.png" alt="Pix" className="h-4 w-4 mr-1" />
                       <span>Pagamento via Pix</span>
                     </div>
+                    <div className="flex items-center justify-center gap-2">
+                      <img src="/boleto.png" alt="Boleto" className="h-4 w-4 mr-1" />
+                      <span>Boleto</span>
+                    </div>
                   </div>
                   
                   <div className="mt-auto space-y-3 w-full">
