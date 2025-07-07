@@ -15,6 +15,7 @@ from produtos.models import Produto, Cupom
 from aprovados.models import Aprovado
 from django.conf import settings
 from decouple import config
+from produtos.models import Produto, Categoria, DetalhesProduto
 
 
 class CategoriaSerializer(serializers.ModelSerializer):
@@ -52,6 +53,7 @@ class ProdutoDetailSerializer(serializers.ModelSerializer, TaggitSerializer):
     preco_parcelado = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     tags = TagListSerializerField()
     amostra_url = serializers.SerializerMethodField()
+    produtos_relacionados = serializers.SerializerMethodField()
 
     class Meta:
         model = Produto
@@ -62,6 +64,20 @@ class ProdutoDetailSerializer(serializers.ModelSerializer, TaggitSerializer):
         if obj.amostra:
             return request.build_absolute_uri(obj.amostra.url)
         return None
+    
+    def get_produtos_relacionados(self, obj):
+        categorias_do_produto = obj.categorias.all()
+
+        if not categorias_do_produto.exists():
+            return []
+        
+        produtos_relacionados = Produto.objects.filter(
+            categorias__in=categorias_do_produto
+        ).exclude(
+            id=obj.id
+        ).distinct().order_by('-data_criacao')[:4]
+
+        return ProdutoListSerializer(produtos_relacionados, many=True, context=self.context).data
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)

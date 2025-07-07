@@ -11,6 +11,7 @@ import api from "@/services/api.ts";
 import { ProdutoDetalhado } from "@/types/produto.ts";
 import { useCart } from "@/context/CartContext.tsx";
 import { useRef } from "react";
+import { ProdutoCard } from "@/components/produtos/ProdutoCard";
 
 const ProdutoDetalhe = () => {
   const { slug } = useParams();
@@ -245,18 +246,17 @@ const ProdutoDetalhe = () => {
             </div>  
           )}
           
-          {/* Seção de produtos relacionados (opcional) */}
-          <div className="mt-12">
-            <h2 className="text-2xl font-bold mb-4">Compre também:</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="border border-gray-200 rounded-lg p-2 flex items-center">
-                  <input type="checkbox" className="h-4 w-4 mr-3" />
-                  <span className="text-sm truncate">Produto Relacionado {i}</span>
-                </div>
-              ))}
+          {/* Seção de produtos relacionados */}
+          {produto.produtos_relacionados && produto.produtos_relacionados.length > 0 && (
+            <div className="mt-16 border-t pt-12">
+              <h2 className="text-3xl font-bold text-center mb-8">Produtos Relacionados</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {produto.produtos_relacionados.map((relacionado) => (
+                  <ProdutoCard key={relacionado.id} produto={relacionado} />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </main>
       <Footer />
