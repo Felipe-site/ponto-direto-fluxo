@@ -194,12 +194,33 @@ REST_FRAMEWORK = {
     ],
 }
 
+def custom_preprocessing_hook(endpoints):
+    filtered_endpoints = []
+    urls_to_ignore = [
+        'dj-rest-auth_password_reset',
+        'dj-rest-auth_password_reset_confirm',
+        'dj-rest-auth_login',
+        'dj-rest-auth_logout',
+        'dj-rest-auth_user',
+        'dj-rest-auth_password_change',
+        'dj-rest-auth_token_verify',
+        'dj-rest-auth_token_refresh',
+    ]
+
+    for (path, path_regex, method, callback) in endpoints:
+        if callback.view_class.__name__ not in urls_to_ignore:
+            filtered_endpoints.append((path, path_regex, method, callback))
+
+    return filtered_endpoints
+
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Direto no Ponto API',
     'DESCRIPTION': 'Documentação da API do projeto Direto no Ponto',
     'VERSION': '1.0.0',
-    'SCHEMA_PATH_PREFIX': '/api/v1',
     'SERVE_INCLUDE_SCHEMA': False,
+    'PREPROCESSING_HOOKS': [
+        'core.settings.custom_preprocessing_hook'
+    ]
 }
 
 import sys
