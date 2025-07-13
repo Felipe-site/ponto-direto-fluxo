@@ -194,6 +194,14 @@ REST_FRAMEWORK = {
     ],
 }
 
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Direto no Ponto API',
+    'DESCRIPTION': 'Documentação da API do projeto Direto no Ponto',
+    'VERSION': '1.0.0',
+    'SCHEMA_PATH_PREFIX': '/api/v1',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
+
 import sys
 if 'collectstatic' in sys.argv:
     DEBUG = False
